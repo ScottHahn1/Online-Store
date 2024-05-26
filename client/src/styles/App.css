@@ -1,0 +1,167 @@
+
+body {
+  margin: 0;
+}
+
+.app {
+  box-sizing: border-box;
+  height: 100%;
+  position: relative;
+}
+
+nav {
+  position: sticky;
+  top: 0 !important;
+}
+
+li {
+  list-style: none;
+}
+
+a {
+  text-decoration: none;
+}
+
+h2 {
+  letter-spacing: .2rem;
+  font-family: "Montserrat";
+}
+
+button {
+  cursor: pointer;
+  border: 0;
+}
+
+.register-login {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  gap: 2rem;
+  margin-top: 5rem;
+  font-family: "Poppins";
+}
+
+form {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  position: relative;
+  justify-content: center;
+}
+
+.form-input {
+  width: 30rem;
+  border: 1px solid lightgray;
+  margin-bottom: 1rem;
+}
+
+form button {
+  border: 1px solid lightgray;
+  background-color: black;
+  color: white;
+  box-shadow: 4px 2px red;
+  border-radius: 75px;
+  padding: 0 1rem;
+  font-size: 1.5rem;
+  transition: all .5s ease;
+}
+
+.show-password {
+  position: absolute;
+  right: 0;
+  font-size: 1rem;
+  display: flex;
+  gap: .5rem;
+  align-items: center;
+  cursor: pointer;
+}
+
+.login-succesful-popup {
+  border-radius: 20px;
+  padding: 0 1rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.loading-line {
+  height: 4px;
+  width: 100%;
+  --c:no-repeat linear-gradient(red 0 0);
+  background: var(--c),var(--c),#d7b8fc;
+  background-size: 60% 100%;
+  animation: loading-line 3s infinite;
+}
+
+.loading {
+  border: 5px solid #f3f3f3; 
+  border-top-color: red;
+  border-radius: 50%;
+  width: 5rem;
+  height: 5rem;
+  animation: spin 2s linear infinite;
+  margin: 2rem auto;
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg) }
+  100% { transform: rotate(360deg) }
+}
+
+@keyframes loading-line {
+  0%   {background-position:-150% 0,-150% 0}
+  66%  {background-position: 250% 0,-150% 0}
+  100% {background-position: 250% 0, 250% 0}
+}
+
+form button:hover {
+  transform: scale(1.1);
+}
+
+@keyframes changeColour {
+  0% {
+    background-color: black;
+  } 
+  100% {
+    background-color: red;
+  }
+}
+
+@media screen and (max-width: 600px) {
+  .app {
+    font-size: .7rem;
+  }
+
+  h2 {
+    letter-spacing: .1rem;
+  }
+
+  .register-login {
+    font-size: 1.1rem;
+  }
+  
+  .form-input {
+    width: 15rem;
+  }
+  
+  .show-password {
+    right: 0;
+    font-size: 1rem;
+    gap: .5rem;
+  }
+}
+
+@media only screen and (min-width: 992px) {
+  .register-login {
+    font-size: 1.1rem;
+  }
+
+  .register-login h2 {
+    font-size: 2x;
+  }
+
+  form input {
+    font-size: 1.1rem;
+  }
+}

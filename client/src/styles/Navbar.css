@@ -1,0 +1,150 @@
+nav {
+    background-image: linear-gradient(180deg, red, black);
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+    z-index: 1;
+    font-family: "Poppins";
+}
+
+nav h1 {
+    font-family:'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
+    background-color: black;
+    border-radius: 10px;
+    box-shadow: 2px 2px white;
+    padding: 0 .5rem;
+}
+
+nav a {
+    color: white;
+}
+
+nav li {
+    cursor: pointer;
+    color: white; 
+}
+nav li:hover {
+    color: rgb(245, 71, 71);
+}
+
+.login-register {
+    display: flex;
+    justify-content: space-around;
+}
+
+.login-register button {
+    font-family: "Poppins";
+    box-shadow: 3px 2px red;
+    border-radius: 75px;
+    border: 2px solid white;
+    background-color: black;
+    color: white;
+}
+
+.login-popup {
+    position: absolute;
+    top: 5.5rem;
+    right: 10.5rem;
+}
+
+.login-popup .login-popup-text {
+    font-size: .9rem;
+    background-color: black;
+    color: white;
+    text-align: center;
+    border-radius: 10px;
+    padding: .3rem 2rem;
+    position: absolute;
+    z-index: 1;
+    box-shadow: 3px 2px red;
+    border: 2px solid white;
+}
+
+.login-popup .login-popup-text::after {
+    content: "";
+    position: absolute;
+    bottom: 100%;
+    left: 50%;
+    border-width: 8px;
+    border-style: solid;
+    border-color: transparent transparent white transparent;
+}
+
+@media screen and (max-width: 600px) {
+    nav {
+        font-size: .5rem;
+    }
+
+    nav h1 {
+        font-size: 1rem;
+    }
+
+    .login-register {
+        flex-direction: column;
+    }
+
+    .login-register button {
+        font-size: .8rem;
+    }
+
+    .dropdown {
+        position: absolute;
+        background-color: whitesmoke;
+        text-align: left;
+        font-size: .7rem;
+        width: 30%;
+        z-index: 2;
+    }
+}
+
+@media screen and (min-width: 600px) {
+    nav {
+        font-size: .8rem;
+    }
+
+    nav h1 {
+        font-size: 1.5rem;
+    }
+
+    .login-register {
+        width: 10rem;
+        display: flex;
+        justify-content: space-around;
+    }
+    
+    .login-register button {
+        font-family: "Poppins";
+        transition: all .5s ease;
+    }
+    .login-register button:hover {
+        transform: scale(1.2);
+    }
+}
+
+@media only screen and (min-width: 768px) {
+    .login-register button {
+        transition: all .5s ease;
+    }
+
+    .login-register button:hover {
+        transform: scale(1.2);
+    }
+}
+
+@media only screen and (min-width: 992px) {
+    nav {
+        font-size: 1rem;
+    }
+
+    nav h1 {
+        font-size: 2rem;
+    }
+
+    .login-register {
+        width: 15rem;
+    }
+    
+    .login-register button {
+        font-size: 1.2rem;
+    }
+}

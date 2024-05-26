@@ -1,0 +1,18 @@
+import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { deleteData } from "../hooks/Api";
+import { useEffect } from "react";
+
+const RemoveFromCart = (userId: number, productId: number) => {
+  const queryClient = useQueryClient();
+
+  const { mutate } = useMutation({
+    mutationFn: () => deleteData(`http://localhost:7000/cart/delete/${userId}/${productId}`),
+    onSuccess: () => queryClient.invalidateQueries({ queryKey: ["cart"] })
+  });
+
+  useEffect(() => {
+    productId && mutate();
+  }, [productId])
+}
+
+export default RemoveFromCart;

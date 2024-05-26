@@ -1,0 +1,62 @@
+.mobile-nav {
+    overflow: hidden;
+    position: fixed;
+    top: 0;
+    z-index: 1;
+    background-image: linear-gradient(180deg, red, black);
+    width: 100%;
+}
+
+.mobile-nav h1 {
+    font-family: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
+    background-color: black;
+    border-radius: 10px;
+    box-shadow: 2px 2px white;
+    padding: 0 .5rem;
+    width: max-content;
+    font-size: 1.5rem;
+}
+
+.mobile-links {
+    background-color: black;
+    background-color: rgb(31, 29, 29);
+    color: white;
+    font-family: "Poppins";
+    width: 100%;
+    padding-bottom: 1rem;
+}
+
+.mobile-links ul:first-child {
+    padding-top: 1rem;
+}
+
+.mobile-links ul {
+    width: 100%;
+}
+
+.mobile-links li {
+    border-bottom: 1px solid red;
+    width: 100%;
+    font-size: 1rem;
+    color: white;
+    margin: 1rem 0;
+}
+
+.mobile-login-popup {
+    position: absolute;
+    right: 55%;
+    bottom: 20%;
+}
+
+.mobile-login-popup .mobile-login-popup-text {
+    font-size: .9rem;
+    background-color: black;
+    color: white;
+    text-align: center;
+    border-radius: 10px;
+    padding: .3rem 2rem;
+    position: absolute;
+    z-index: 1;
+    box-shadow: 3px 2px red;
+    border: 2px solid white;
+}

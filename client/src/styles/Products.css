@@ -1,0 +1,236 @@
+.categories-products {
+    display: flex;
+    justify-content: space-between;
+}
+
+.products-container {
+    margin: 0 auto;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    border-left: 2px solid lightgray;
+    font-family: "Poppins";
+    /* animation: fadeIn 2s linear; */
+}
+
+.products-container h2 {
+    color: red;
+    max-width: 25%;
+}
+
+.products-header {
+    display: flex;
+    align-items: center;
+    gap: 25%;
+    width: 100%; 
+}
+
+.cards {
+    display: flex;
+    gap: 1rem;
+    flex-wrap: wrap;
+    justify-content: space-around;
+}
+
+.card {
+    width: 20%;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+    animation: fadeIn 1.2s linear;
+    position: relative;
+}
+
+.card img {
+    width: 90%;
+    cursor: pointer;
+}
+
+.card .login-popup {
+    top: 60%;
+    right: 70%;
+}
+
+.card .login-popup-text {
+    background-color: red;
+}
+
+.plus, .minus, .add-to-cart-btn {
+    background-color: black;
+    color: white;
+}
+
+.add-remove-btn {
+    display: flex;
+    gap: .5rem;
+    align-items: center;
+    font-size: 1.5rem;
+}
+
+.plus, .minus {
+    padding: .5rem;
+    width: 2.5rem;
+    font-size: 1.5rem;
+}
+
+.add-to-cart-btn {
+    margin-top: 2rem;
+    font-size: 1.2rem;
+    padding: 1.5rem;
+    width: 100%;
+}
+
+.pages {
+    align-self: center;
+    margin-top: 5rem;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: .5rem;
+    font-size: 1.2rem;
+    padding: 1rem 0;
+}
+
+.pages button {
+    font-size: 1.2rem;
+    padding: .5rem 1rem;
+    background-color: black;
+    box-shadow: 4px 2px red;
+    border: 2px solid lightgray;
+    color: white;
+    border-radius: 4rem;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0 }
+    to { opacity: 1 }
+}
+
+@media only screen and (max-width: 600px) {
+    .categories-products {
+        flex-direction: column;
+    }
+
+    .products-container {
+        width: 100%;
+    }
+
+    .products-container h2 {
+        padding-left: 0;
+    }
+
+    .products-container span, .products-container select {
+        font-size: 1rem !important;
+    }
+
+    .products-header {
+        gap: 0;
+        width: 100%; 
+        justify-content: space-around;
+    }    
+    
+    .cards {
+        gap: 1rem;
+    }
+    
+    .card {
+        width: 40%;
+    }
+    
+    .card img {
+        width: 100%;
+    }
+    
+    .add-remove-btn {
+        gap: .5rem;
+        font-size: 1rem;
+    }
+    
+    .plus, .minus {
+        padding: .5rem;
+        width: 2rem;
+        font-size: 1rem;
+    }
+    
+    .add-to-cart-btn {
+        margin-top: 2rem;
+        font-size: 1rem;
+        padding: .8rem;
+        width: 100%;
+    }
+    
+    .pages {
+        font-size: 1rem;
+    }
+}
+
+@media only screen and (min-width: 600px) {
+    .products-container {
+        width: 75%;
+    }
+
+    .products-header {
+        gap: 0;
+        width: 100%; 
+        justify-content: space-around;
+    }  
+
+    .card {
+        width: 25%;
+    }
+
+    .add-remove-btn {
+        font-size: 1.3rem;
+    }
+
+    .plus, .minus {
+        padding: .5rem;
+        width: 2rem;
+        font-size: 1rem;
+    }
+    
+    .add-to-cart-btn {
+        font-size: 1rem;
+        padding: .8rem;
+        width: 100%;
+    }
+
+    .pages button {
+        transition: all .5s ease;
+    }
+    .pages button:hover {
+        transform: scale(1.1);
+    }
+}
+
+@media only screen and (min-width: 992px) {
+    .products-container h2 {
+        font-size: 2rem;
+    }
+
+    .products-header {
+        gap: 20%;
+    }
+
+    .cards {
+        gap: 1rem;
+    }
+    
+    .card {
+        width: 20%;
+    }    
+
+    .add-remove-btn {
+        font-size: 1.5rem;
+    }
+    
+    .plus, .minus {
+        width: 2.5rem;
+        font-size: 1.5rem;
+    }
+    
+    .add-to-cart-btn {
+        font-size: 1.2rem;
+        padding: 1.5rem;
+    }
+}

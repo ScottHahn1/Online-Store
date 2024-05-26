@@ -1,0 +1,45 @@
+footer {
+    background-color: black;
+    color: white;
+    font-family: "RobotoMedium";
+    line-height: 2rem;
+    text-align: center;
+    width: 100%;
+    margin-top: auto;
+    animation: fade-in 2s linear 0s 1;
+    margin-top: 2rem;
+    font-family: "Poppins";
+}
+
+.footer-links {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 20%;
+}
+
+.footer-nav-links, .social-media-links {
+    padding: 1em 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.footer-links h2, .social-media-links h2 {
+    width: 100%;
+}
+
+.footer-links a {
+    color: white;
+}
+
+.footer-links a:hover, .made-by > *:hover  {
+    text-decoration: none;
+    color: red;
+}
+
+@media screen and (max-width: 500px) {
+    .footer-links {
+        gap: 2rem;
+    }
+}
