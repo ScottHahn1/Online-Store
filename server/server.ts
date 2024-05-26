@@ -12,7 +12,11 @@ const app = express();
 const port = process.env.PORT;
 
 app.use(express.json());
-app.use(cors());
+app.use(cors({
+    origin: ["https://online-store-frontend-mocha.vercel.app"],
+    methods: ["GET, POST, DELETE"],
+    credentials: true
+}));
 app.use("/users", usersRouter);
 app.use("/products", productsRouter);
 app.use("/categories", categoriesRouter);
