@@ -5,7 +5,7 @@ const useTotal = (category: string) => {
     const { data: totalProducts } = useQuery({
         queryKey: ["totalProducts", category],
         queryFn: () =>
-          getProducts<{ count: number }, { category: string }>(`http://localhost:7000/products/total`, { category: category })
+          getProducts<{ count: number }, { category: string }>(`https://online-store-backend-zeta.vercel.app/products/total`, { category: category })
     });
 
     return { totalProducts };

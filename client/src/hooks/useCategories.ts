@@ -11,7 +11,7 @@ const useCategories = () => {
     const { data, isLoading } = useQuery({
       queryKey: ["categories"],
       queryFn: () =>
-        getProducts<Data, {}>("http://localhost:7000/categories", {})
+        getProducts<Data, {}>("https://online-store-backend-zeta.vercel.app/categories", {})
     });
 
     return { data, isLoading };

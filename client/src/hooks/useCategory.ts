@@ -29,7 +29,7 @@ const useCategory = (category: string, sortBy: string, lastSeenProduct: number |
   const { data } = useQuery({
     queryKey: ["category", { category, sortBy, lastSeenProduct }],
     queryFn: () =>
-      getProducts<Data, Query>(`http://localhost:7000/categories/${category}`, { category: category, column: sortBy, lastSeen: lastSeenProduct, lastSeenId: lastSeenId, prev: prev }),
+      getProducts<Data, Query>(`https://online-store-backend-zeta.vercel.app/categories/${category}`, { category: category, column: sortBy, lastSeen: lastSeenProduct, lastSeenId: lastSeenId, prev: prev }),
     enabled: !!category
   });
 

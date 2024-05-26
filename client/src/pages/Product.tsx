@@ -25,7 +25,7 @@ const Product = ({ blur }: { blur: boolean }) => {
     queryKey: ["product"],
     queryFn: () =>
       getProducts<Data, {}>(
-        `http://localhost:7000/products/${getSessionStorage("product")}`
+        `https://online-store-backend-zeta.vercel.app/products/${getSessionStorage("product")}`
       ),
     enabled: !!getSessionStorage("product"),
   });

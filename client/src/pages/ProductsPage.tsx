@@ -49,7 +49,7 @@ const ProductsPage = ({ category, setCategory, blur }: Props) => {
   const { data, isLoading } = useQuery({
     queryKey: ["allProducts", { lastSeenProduct, sortBy, page, category }],
     queryFn: () =>
-      getProducts<Data, Query>(`http://localhost:7000/products`, { column: sortBy, lastSeen: lastSeenProduct, lastSeenId: lastSeenId , prev: prev }),
+      getProducts<Data, Query>(`https://online-store-backend-zeta.vercel.app/products`, { column: sortBy, lastSeen: lastSeenProduct, lastSeenId: lastSeenId , prev: prev }),
     enabled: !category,
   });
 

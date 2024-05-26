@@ -47,7 +47,7 @@ const Register = () => {
     if (username && password && confirmPassword) {
       if (password === confirmPassword) {
         mutate({
-          url: "http://localhost:7000/users/register",
+          url: "https://online-store-backend-zeta.vercel.app/users/register",
           body: {
             username: username,
             password: password,

@@ -35,7 +35,7 @@ const Cart = ({ setBlur, setShowCart }: Props) => {
     queryKey: ["cart"],
     queryFn: () =>
       getProducts<Products, { userId: number | string }>(
-        "http://localhost:7000/cart",
+        "https://online-store-backend-zeta.vercel.app/cart",
         { userId: getLocalStorage("userId") }
       ),
   });

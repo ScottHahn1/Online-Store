@@ -25,7 +25,7 @@ const Similar = ({ product, productId, category }: Props) => {
   const { data } = useQuery({
     queryKey: ["similar", product],
     queryFn: () =>
-      getProducts<Data, Props>(`http://localhost:7000/products/similar`, {
+      getProducts<Data, Props>(`https://online-store-backend-zeta.vercel.app/products/similar`, {
         productId: productId,
         category: category,
       }),

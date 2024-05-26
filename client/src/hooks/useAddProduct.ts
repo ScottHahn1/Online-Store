@@ -49,7 +49,7 @@ const useAddProduct = ({ ...params }: Params) => {
     if (params.addToCart) {
       Array.from({ length: number }).map(_ => {
         mutate({
-          url: "http://localhost:7000/cart/add",
+          url: "https://online-store-backend-zeta.vercel.app/cart/add",
           body: {
             userId: params.userId,
             productId: params.productId,

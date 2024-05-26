@@ -6,7 +6,7 @@ const RemoveFromCart = (userId: number, productId: number) => {
   const queryClient = useQueryClient();
 
   const { mutate } = useMutation({
-    mutationFn: () => deleteData(`http://localhost:7000/cart/delete/${userId}/${productId}`),
+    mutationFn: () => deleteData(`https://online-store-backend-zeta.vercel.app/cart/delete/${userId}/${productId}`),
     onSuccess: () => queryClient.invalidateQueries({ queryKey: ["cart"] })
   });
 
