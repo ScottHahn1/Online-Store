@@ -51,7 +51,7 @@ const Login = ({
   const login = (e: React.MouseEvent<HTMLFormElement>) => {
     e.preventDefault();
     mutate({
-      url: "https://online-store-backend-zeta.vercel.app/login",
+      url: "https://online-store-backend-zeta.vercel.app/users/login",
       body: {
         username: username,
         password: password,
