@@ -1,9 +1,10 @@
 
 # Aggro Gaming
 
-A brief description of what this project does:
+## Overview
 
 A fictional online store built with React, TypeScript and Node/Express which contains products users can view, and add to their shopping cart. The aim of this project is to create a responsive user interface with authentication features, a shopping cart functionality, and data storage using MySQL.
+
 ## Features
 
 - Home page with a "Shop Now" button which takes the user to the products page.
