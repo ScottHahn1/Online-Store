@@ -9,11 +9,12 @@ import categoriesRouter from "./routes/categories";
 dotenv.config();
 
 const app = express();
-const port = process.env.PORT;
+const port = process.env.PORT || 8888;
+const FRONTEND_URL = process.env.FRONTEND_URL || "http://localhost:3000";
 
 app.use(express.json());
 app.use(cors({
-    origin: ["https://online-store-frontend-mocha.vercel.app"],
+    origin: ["https://online-store-frontend-mocha.vercel.app", FRONTEND_URL],
     methods: ["GET", "POST", "DELETE"],
     credentials: true
 }));
