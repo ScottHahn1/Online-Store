@@ -7,11 +7,17 @@ A fictional online store built with React, TypeScript and Node/Express which con
 
 ## Features
 
-- Home page with a "Shop Now" button which takes the user to the products page.
-- Products page with sorting functionality.
-- Shopping Cart functionality.
-- Login/Register buttons.
-- Individual product page that contains the specific product a user clicked on, as well as similar products.
+- **Home Page**: Welcoming home page with a "Shop Now" button directing users to the product listings.
+- **Authentication**: Login and register functionality for user authentication and personalization.
+- **Products Page**: Displays all products, with sorting functionality to help users find specific items.
+- **Product Details**: Each product page displays specific product information and shows related items to enhance the shopping experience.
+- **Shopping Cart**: Allows users to add, remove, and view items in their cart before proceeding to checkout.
+
+## Technologies Used
+- **Frontend**: React, TypeScript, CSS
+- **Backend**: Node.js, Express.js
+- **Database**: MySQL
+- **Other**: RESTful APIs, Axios for HTTP requests
 
 ## Run Locally
 
@@ -27,7 +33,7 @@ Go to the project directory
   cd Online-Store
 ```
 
-Install client-side dependencies
+Install client-side(frontend) dependencies
 
 ```bash
   cd client
@@ -40,7 +46,7 @@ Start the frontend server
   npm start
 ```
 
-Install server-side dependencies
+Install server-side(backend) dependencies
 
 ```bash
   cd server
