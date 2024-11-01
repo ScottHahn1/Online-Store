@@ -3,6 +3,51 @@ import pool from "../database";
 
 const productsRouter = Router();
 
+//all products
+productsRouter.get("/", (req, res) => {
+  const { category, sortBy } = req.query;
+  const page = parseInt(req.query.page as string);
+  const limit = 50;
+  const offset = (page - 1) * limit;
+
+  let sql: string;
+
+  if (!category) {
+    if (sortBy === 'title') {
+      sql = `SELECT * FROM products ORDER BY ${sortBy} ASC, productId LIMIT ? OFFSET ?`;
+    } else {
+      sql = `SELECT * FROM products ORDER BY ${sortBy} DESC, productId LIMIT ? OFFSET ?`;
+    }
+  } else {
+    if (sortBy === 'title') {
+      sql = `SELECT * FROM products WHERE category->"$.name" = ? ORDER BY ${sortBy} ASC, productId LIMIT ? OFFSET ?`;
+    } else {
+      console.log(category)
+      sql = `SELECT * FROM products WHERE category->"$.name" = ? ORDER BY ${sortBy} DESC, productId LIMIT ? OFFSET ?`;
+    }
+  }
+
+  pool.getConnection((err: any, connection: any) => {
+    if (err) {
+      console.log(err);
+      return;
+    }
+
+    const sqlQueryParams = category ? [category, limit, offset] : [limit, offset];
+
+    connection.query(sql, sqlQueryParams, (err: any, rows: any) => {
+      if (err) {
+        console.log(err);
+        return;
+      }
+
+      res.send(rows);
+      connection.release();
+    });
+  });
+});
+
+//total amount of products
 productsRouter.get("/total", (req, res) => {
   const { category } = req.query;
 
@@ -33,54 +78,7 @@ productsRouter.get("/total", (req, res) => {
   });
 });
 
-//all products
-productsRouter.get("/", (req, res) => {
-  const { column, lastSeen, lastSeenId, prev } = req.query;
-  
-  let sql: string;
-
-  if (column === "title") {
-    if (!lastSeen) {
-      sql = `SELECT * FROM products ORDER BY ${column}, productId ASC LIMIT 50`;
-    } else {
-      if (prev) {
-        sql = `SELECT * FROM products WHERE (${column} = "${lastSeen}" AND productId < ${lastSeenId}) OR ${column} < "${lastSeen}" ORDER BY ${column} DESC, productId DESC LIMIT 50`;
-      } else {
-        sql = `SELECT * FROM products WHERE (${column} = "${lastSeen}" AND productId > ${lastSeenId}) OR ${column} > "${lastSeen}" ORDER BY ${column} ASC, productId ASC LIMIT 50`;
-      }
-    }
-  } else {
-    if (!lastSeen) {
-      sql = `SELECT * FROM products ORDER BY ${column} DESC, productId ASC LIMIT 50`;
-    } else {
-        if (prev) {
-          sql = `SELECT * FROM products WHERE (${column} = ${lastSeen} AND productId < ${lastSeenId}) OR ${column} > ${lastSeen} ORDER BY ${column} ASC, productId DESC LIMIT 50`;
-        } else {
-          sql = `SELECT * FROM products WHERE (${column} = ${lastSeen} AND productId > ${lastSeenId}) OR ${column} < ${lastSeen} ORDER BY ${column} DESC, productId ASC LIMIT 50`;
-        }
-    }
-  }
-
-  pool.getConnection((err: any, connection: any) => {
-    if (err) {
-      console.log(err);
-      return;
-    }
-
-    connection.query(sql, [], (err: any, rows: any) => {
-      if (err) {
-        console.log(err);
-        return;
-      }
-
-      res.send(rows);
-
-      connection.release();
-    });
-  });
-});
-
-//similar
+//similar products
 productsRouter.get("/similar", (req, res) => {
   const { productId, category } = req.query;
   const sql = `SELECT DISTINCT productId, title, image, price FROM products WHERE category->"$.name" = "${category}" AND NOT productId = ${productId}`;
