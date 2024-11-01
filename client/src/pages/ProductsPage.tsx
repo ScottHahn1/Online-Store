@@ -57,13 +57,13 @@ const ProductsPage = ({ category, setCategory, blur }: Props) => {
   //get the total amount of products in a category
   const { data: totalProducts } = useQuery({
     queryKey: ['totalProducts', category],
-    queryFn: () => getProducts<{ category: string }>(`http://localhost:8888/products/total`, { category: category })
+    queryFn: () => getProducts<{ category: string }>('https://online-store-backend-zeta.vercel.app/products/total', { category: category })
   })
 
   //get all products in a category
   const { data: products, isLoading } = useQuery<Data[]>({
     queryKey: ['allProducts', category, currentPage, sortBy],
-    queryFn: () => getProducts<QueryParams>('http://localhost:8888/products', { category: category, page: currentPage, sortBy: sortBy }),
+    queryFn: () => getProducts<QueryParams>('https://online-store-backend-zeta.vercel.app/products', { category: category, page: currentPage, sortBy: sortBy }),
   });
 
   useEffect(() => {
