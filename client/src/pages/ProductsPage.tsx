@@ -71,7 +71,7 @@ const ProductsPage = ({ category, setCategory, blur }: Props) => {
   }, [category])
 
   return (
-    <div className='flex-space-between'>
+    <div className='flex-space-between' style={{ filter: blur ? "blur(3px)" : "" }}>
       <Categories clickedCategory={category} setClickedCategory={setCategory} />
       {
         !isLoading &&
