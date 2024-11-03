@@ -4,7 +4,7 @@ import "../styles/Product.css";
 import { getLocalStorage, getSessionStorage } from "../hooks/LocalStorage";
 import Rating from "../components/Rating";
 import Similar from "../components/Similar";
-import AddToCart from "../components/AddToCart";
+import AddProductToCart from "../components/AddProductToCart";
 
 type Data = {
   productId: number;
@@ -53,7 +53,7 @@ const Product = ({ blur }: { blur: boolean }) => {
             </div>
 
             <Rating rating={data.rating} ratingCount={data.ratingCount} />
-            <AddToCart
+            <AddProductToCart
               userId={getLocalStorage("userId")}
               productId={data.productId}
               title={data.title}
