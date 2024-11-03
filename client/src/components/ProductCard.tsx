@@ -1,6 +1,6 @@
 import { Link } from "react-router-dom";
 import { getLocalStorage, setSessionStorage } from "../hooks/LocalStorage";
-import AddToCart from "./AddToCart";
+import AddProductToCart from "./AddProductToCart";
 
 type Data = {
   brand: string;
@@ -45,7 +45,7 @@ const ProductCard = ({ product }: Props) => {
         }).format(product.price)}
       </p>
 
-      <AddToCart
+      <AddProductToCart
         userId={getLocalStorage("userId")}
         productId={product.productId}
         title={product.title}
