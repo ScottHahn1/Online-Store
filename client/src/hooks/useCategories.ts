@@ -1,5 +1,5 @@
 import { useQuery } from "@tanstack/react-query";
-import { getProducts } from "./Api";
+import { getProducts } from "../utils/Api";
 
 type Data = {
   id: number,

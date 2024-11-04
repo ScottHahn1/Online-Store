@@ -1,5 +1,5 @@
 import { useQuery } from "@tanstack/react-query";
-import { getProducts } from "../hooks/Api";
+import { getProducts } from "../utils/Api";
 import "../styles/Product.css";
 import { getLocalStorage, getSessionStorage } from "../hooks/LocalStorage";
 import Rating from "../components/Rating";
@@ -53,6 +53,7 @@ const Product = ({ blur }: { blur: boolean }) => {
             </div>
 
             <Rating rating={data.rating} ratingCount={data.ratingCount} />
+
             <AddProductToCart
               userId={getLocalStorage("userId")}
               productId={data.productId}

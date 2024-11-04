@@ -1,5 +1,5 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { deleteData } from "../hooks/Api";
+import { deleteData } from "../utils/Api";
 import { useEffect } from "react";
 
 const RemoveFromCart = (userId: number, productId: number) => {

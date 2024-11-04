@@ -1,5 +1,5 @@
 import { useQuery } from "@tanstack/react-query";
-import { getProducts } from "./Api";
+import { getProducts } from "../utils/Api";
 
 const useTotal = (category: string) => {
     const { data: totalProducts } = useQuery({

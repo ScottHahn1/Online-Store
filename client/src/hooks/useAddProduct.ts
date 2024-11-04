@@ -1,6 +1,6 @@
 import { useQueryClient, useMutation } from "@tanstack/react-query";
 import { Dispatch, SetStateAction, useEffect } from "react";
-import { postData } from "./Api";
+import { postData } from "../utils/Api";
 
 type PostVariables = {
   url: string;

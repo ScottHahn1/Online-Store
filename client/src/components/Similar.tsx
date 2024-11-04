@@ -1,5 +1,5 @@
 import { useQuery } from "@tanstack/react-query";
-import { getProducts } from "../hooks/Api";
+import { getProducts } from "../utils/Api";
 import { getSessionStorage, setSessionStorage } from "../hooks/LocalStorage";
 import { useEffect, useState } from "react";
 import arrayShuffle from "array-shuffle";

@@ -1,7 +1,7 @@
 import { useMutation } from "@tanstack/react-query";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { postData } from "../hooks/Api";
+import { postData } from "../utils/Api";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faEye } from "@fortawesome/free-solid-svg-icons";
 import { faEyeSlash } from "@fortawesome/free-solid-svg-icons";

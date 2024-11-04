@@ -1,5 +1,5 @@
 import { useQuery } from "@tanstack/react-query";
-import { getProducts } from "../hooks/Api";
+import { getProducts } from "../utils/Api";
 import { getLocalStorage } from "../hooks/LocalStorage";
 import "../styles/Cart.css";
 import { Dispatch, SetStateAction, useEffect, useState } from "react";
