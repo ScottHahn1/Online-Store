@@ -17,7 +17,7 @@ A fictional online store built with React, TypeScript and Node/Express which con
 - **Frontend**: React, TypeScript, CSS
 - **Backend**: Node.js, Express.js
 - **Database**: MySQL
-- **Other**: RESTful APIs, Axios for HTTP requests
+- **Other**: RESTful APIs, Axios for HTTP requests, Tanstack/React Query
 
 ## Run Locally
 
