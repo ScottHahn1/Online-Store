@@ -1,7 +1,7 @@
 import { Link } from "react-router-dom";
 import "../styles/Navbar.css";
 import { Dispatch, SetStateAction, useEffect, useState } from "react";
-import { getLocalStorage } from "../hooks/LocalStorage";
+import { getLocalStorage } from "../utils/LocalStorage";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faShoppingCart } from "@fortawesome/free-solid-svg-icons";
 import { HashLink } from "react-router-hash-link";

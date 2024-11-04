@@ -14,7 +14,7 @@ import {
   getLocalStorage,
   getSessionStorage,
   setSessionStorage,
-} from "./hooks/LocalStorage";
+} from "./utils/LocalStorage";
 
 const App = () => {
   const [showCart, setShowCart] = useState(false);

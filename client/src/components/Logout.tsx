@@ -1,5 +1,5 @@
 import { Dispatch, SetStateAction } from "react";
-import { removeLocalStorage } from "../hooks/LocalStorage";
+import { removeLocalStorage } from "../utils/LocalStorage";
 
 const Logout = ({
   setLoggedIn,

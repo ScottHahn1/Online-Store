@@ -4,7 +4,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { Dispatch, SetStateAction, useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { HashLink } from "react-router-hash-link";
-import { getLocalStorage, removeLocalStorage } from "../hooks/LocalStorage";
+import { getLocalStorage, removeLocalStorage } from "../utils/LocalStorage";
 
 type Props = {
   loggedIn: string;

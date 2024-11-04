@@ -1,5 +1,5 @@
 import { Link } from "react-router-dom";
-import { getLocalStorage, setSessionStorage } from "../hooks/LocalStorage";
+import { getLocalStorage, setSessionStorage } from "../utils/LocalStorage";
 import AddProductToCart from "./AddProductToCart";
 
 type Data = {

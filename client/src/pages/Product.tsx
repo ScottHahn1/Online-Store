@@ -1,7 +1,7 @@
 import { useQuery } from "@tanstack/react-query";
 import { getProducts } from "../utils/Api";
 import "../styles/Product.css";
-import { getLocalStorage, getSessionStorage } from "../hooks/LocalStorage";
+import { getLocalStorage, getSessionStorage } from "../utils/LocalStorage";
 import Rating from "../components/Rating";
 import Similar from "../components/Similar";
 import AddProductToCart from "../components/AddProductToCart";
