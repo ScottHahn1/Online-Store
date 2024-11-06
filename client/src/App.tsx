@@ -10,6 +10,7 @@ import Login from "./pages/Login";
 import Cart from "./components/Cart";
 import Footer from "./components/Footer";
 import MobileMenu from "./components/MobileMenu";
+import useWindowResize from "./hooks/useWindowResize";
 import {
   getLocalStorage,
   getSessionStorage,
@@ -22,24 +23,14 @@ const App = () => {
   const [clickedCategory, setClickedCategory] = useState(
     getSessionStorage("clickedCategory")
   );
-  const [windowWidth, setWindowWidth] = useState(window.innerWidth);
   const [loggedIn, setLoggedIn] = useState(getLocalStorage("token"));
 
   useEffect(() => {
     clickedCategory && setSessionStorage("clickedCategory", clickedCategory);
   }, [clickedCategory]);
 
-  const setWindowDimensions = () => {
-    setWindowWidth(window.innerWidth);
-  };
-
-  useEffect(() => {
-    window.addEventListener("resize", setWindowDimensions);
-    return () => {
-      window.removeEventListener("resize", setWindowDimensions);
-    };
-  }, []);
-
+  const windowWidth = useWindowResize();
+  
   const renderNav = windowWidth > 600 ?
   <Navbar setShowCart={setShowCart} blur={blur} loggedIn={loggedIn} setLoggedIn={setLoggedIn} /> :
   <MobileMenu setShowCart={setShowCart} blur={blur} loggedIn={loggedIn} setLoggedIn={setLoggedIn} />
@@ -57,9 +48,7 @@ const App = () => {
           />
           <Route path="/register" element={<Register />} />
           <Route path="/login" element={<Login setLoggedIn={setLoggedIn} />} />
-          <Route
-            path="/products"
-            element={
+          <Route path="/products" element={
               <ProductsPage
                 category={clickedCategory}
                 setCategory={setClickedCategory}
