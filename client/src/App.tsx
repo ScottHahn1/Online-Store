@@ -40,19 +40,14 @@ const App = () => {
     };
   }, []);
 
+  const renderNav = windowWidth > 600 ?
+  <Navbar setShowCart={setShowCart} blur={blur} loggedIn={loggedIn} setLoggedIn={setLoggedIn} /> :
+  <MobileMenu setShowCart={setShowCart} blur={blur} loggedIn={loggedIn} setLoggedIn={setLoggedIn} />
+
   return (
     <div className="app">
       <BrowserRouter>
-        {windowWidth > 600 ? (
-          <Navbar
-            setShowCart={setShowCart}
-            blur={blur}
-            loggedIn={loggedIn}
-            setLoggedIn={setLoggedIn}
-          />
-        ) : (
-          <MobileMenu setShowCart={setShowCart} blur={blur} loggedIn={loggedIn} setLoggedIn={setLoggedIn} />
-        )}
+        {renderNav}
         {showCart && <Cart setBlur={setBlur} setShowCart={setShowCart} />}
         <Routes>
           <Route
