@@ -86,7 +86,7 @@ const ProductsPage = ({ category, setCategory, blur }: Props) => {
             </select>
           </div>
           <div className='cards'>
-            { products?.map(product => <ProductCard product={product} />) }
+            { products?.map(product => <ProductCard product={product} key={product.productId} />) }
           </div>
           <div className="pages">
             {
