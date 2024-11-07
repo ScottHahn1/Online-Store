@@ -24,7 +24,8 @@
     border-radius: 75px;
     border: 2px solid white;
     box-shadow: 5px 3px red;
-    background-color: red;
+    text-shadow: 3px 3px 20px red,
+    -2px 1px 30px red;
     background-color: black;
     color: white;
     margin-top: 1rem;
