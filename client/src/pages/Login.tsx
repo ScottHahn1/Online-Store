@@ -30,22 +30,25 @@ const Login = ({
   const { mutate } = useMutation({
     mutationFn: (variables: PostVariables) => postData(variables),
     onSuccess: (data) => {
-      if (typeof data === "string") {
-        setError(data);
-        setUsername("");
-        setPassword("");
-      } else {
+      if (data.success) {        // if login is successful
         error && setError("");
         setLocalStorage("token", data.token);
-        setLocalStorage("userId", data.result[0].userId);
+        setLocalStorage("userId", data.userId);
         setLocalStorage("username", data.username);
         setLoginSuccessful(true);
         setTimeout(() => {
           setLoggedIn("token");
           navigate("/");
         }, 2000);
+      } else {                  //if login fails
+        setError(data.message);
+        setUsername("");
+        setPassword("");
       }
     },
+    onError: (err) => {
+      console.log(err)
+    }
   });
 
   const login = (e: React.MouseEvent<HTMLFormElement>) => {
