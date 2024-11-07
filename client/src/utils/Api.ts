@@ -24,8 +24,8 @@ const postData = async ({ url, body }: MutateParams) => {
         body
     ).then(res => {
         return res.data;
-    }).catch(error => {
-        console.log(error);
+    }).catch(err => {
+        return err.response.data;
     })
 
     return postRequest;
