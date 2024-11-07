@@ -26,7 +26,7 @@ const Home = ({ blur, setCategory }: Props) => {
           </p>
 
           <Link to="/products">
-            <button className="shop-now-btn">Shop Now</button>
+            <button className="shop-now-btn">Start Shopping</button>
           </Link>
         </div>
       </div>
