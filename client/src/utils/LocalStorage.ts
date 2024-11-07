@@ -9,7 +9,7 @@ const setLocalStorage = <T>(key: string, value: T) => {
 const getLocalStorage = (key: string) => {
     try {
         const item = window.localStorage.getItem(key);
-        if (item) {
+        if (item !== 'undefined' && item !== null) {
             return JSON.parse(item);
         }
     } catch (error) {
