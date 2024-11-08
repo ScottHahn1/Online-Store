@@ -11,6 +11,10 @@ usersRouter.post('/register', async (req, res) => {
     const sql = 'INSERT INTO users (username, password) VALUES (?, ?)';
     const { username, password } = req.body;
 
+    if (!username || !password) {
+        return res.status(400).json({ error: 'Username and password are required.' });
+    }
+
     try {
         const hash = await bcrypt.hash(password, salt);
 
