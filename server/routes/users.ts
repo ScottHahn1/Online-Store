@@ -3,28 +3,27 @@ import pool from "../database";
 import bcrypt from 'bcrypt';
 import jwt from "jsonwebtoken";
 
+const usersRouter = Router();
 const salt = 10;
 
-const usersRouter = Router();
-
 //register 
-usersRouter.post('/register', (req, res) => {
+usersRouter.post('/register', async (req, res) => {
     const sql = 'INSERT INTO users (username, password) VALUES (?, ?)';
     const { username, password } = req.body;
-    
-    bcrypt.hash(password, salt, (err: any, hash: any) => {
-        if (err) {
-            console.log(err);
-            res.send(err);
-        } else {
-            pool.query(sql, [username, hash], (err: any, result: any) => {
-                if (err) {
-                    return res.send(err)
-                }
-                return res.json({ registered: true, result });
-            })
-        }
-    })
+
+    try {
+        const hash = await bcrypt.hash(password, salt);
+
+        pool.query(sql, [username, hash], (error, result) => {
+            if (error) {
+                res.status(500).json({ error: 'Internal server error!' });
+            } else {
+                return res.status(201).json({ registered: true, result })
+            }
+        })
+    } catch (error) {
+        return res.status(500).json({ error: 'Internal server error!' });
+    }
 })
 
 //login
