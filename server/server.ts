@@ -5,6 +5,7 @@ import cors from "cors";
 import usersRouter from "./routes/users";
 import cartRouter from "./routes/cart";
 import categoriesRouter from "./routes/categories";
+import cookieParser from 'cookie-parser';
 
 dotenv.config();
 
@@ -13,6 +14,7 @@ const port = process.env.PORT || 8888;
 const FRONTEND_URL = process.env.FRONTEND_URL || "http://localhost:3000";
 
 app.use(express.json());
+app.use(cookieParser());
 app.use(cors({
     origin: ["https://online-store-frontend-mocha.vercel.app", FRONTEND_URL],
     methods: ["GET", "POST", "DELETE"],
