@@ -4,8 +4,7 @@ import "./index.css";
 import App from "./App";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { ReactQueryDevtools } from '@tanstack/react-query-devtools';
-// import "./assets/fonts/Montserrat-Italic-VariableFont_wght.ttf";
-// import "./assets/fonts/Poppins-Regular.ttf";
+import { UserProvider } from "./contexts/UserContext";
 
 const queryClient = new QueryClient();
 
@@ -15,8 +14,10 @@ const root = ReactDOM.createRoot(
 root.render(
   <React.StrictMode>
     <QueryClientProvider client={queryClient}>
+      <UserProvider>
         <App />
         <ReactQueryDevtools initialIsOpen={false} />
+      </UserProvider>
     </QueryClientProvider>
   </React.StrictMode>
 );
