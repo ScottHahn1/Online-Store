@@ -1,9 +1,9 @@
 import { useEffect, useState } from "react";
 import useAddProduct from "../hooks/useAddProduct";
-import AddRemoveCart from "./AddRemoveCart";
+import QuantityButtons from "./QuantityButtons";
 
 type ProductProps = {
-  userId: number;
+  loggedIn: boolean | null;
   productId: number;
   title: string;
   brand: string;
@@ -15,7 +15,7 @@ type ProductProps = {
 }; 
 
 const AddProductToCart = ({
-  userId,
+  loggedIn,
   productId,
   title,
   brand,
@@ -34,7 +34,6 @@ const AddProductToCart = ({
     addToCart,
     setAddToCart,
     numOfProduct,
-    userId,
     productId,
     title,
     brand,
@@ -47,7 +46,7 @@ const AddProductToCart = ({
   });
 
   const handleAddToCart = () => {
-    if (userId) {
+    if (loggedIn) {
       showError && setShowError(false);
       setAddToCart(true);
     } else {
@@ -78,7 +77,7 @@ const AddProductToCart = ({
 
   return (
     <>
-      <AddRemoveCart
+      <QuantityButtons
         isCart={false}
         handleMinusClick={handleMinusClick}
         handlePlusClick={handlePlusClick}
