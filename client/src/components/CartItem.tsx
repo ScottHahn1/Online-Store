@@ -1,6 +1,7 @@
 import { faTrashCan } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { Dispatch, ReactNode, SetStateAction } from "react";
+import { ReactNode } from "react";
+import useRemoveProduct from "../hooks/useRemoveProduct";
 
 type Props = {
     product: {
@@ -9,11 +10,12 @@ type Props = {
         image: string;
         price: number;
     }
-    setItemToDelete: Dispatch<SetStateAction<number>>
     children: ReactNode
 }
 
-const CartItem = ({ children, product, setItemToDelete }: Props) => {
+const CartItem = ({ children, product }: Props) => {
+    const removeFromCart = useRemoveProduct(product.productId);
+    
     return (
         <div className="cart-item" key={product.productId}>
             <div>
@@ -36,7 +38,7 @@ const CartItem = ({ children, product, setItemToDelete }: Props) => {
             </div>
 
             <div className="flex-column" style={{ justifyContent: "center", alignItems: "center" }}>
-                <div style={{ cursor: "pointer" }} onClick={() => setItemToDelete(product.productId)}>
+                <div style={{ cursor: "pointer" }} onClick={() => removeFromCart()}>
                     <FontAwesomeIcon
                     icon={faTrashCan}
                     fontSize="1.3rem"
