@@ -1,14 +1,13 @@
 import { useQuery } from "@tanstack/react-query";
-import { getProducts } from "../utils/Api";
-import { getLocalStorage } from "../utils/LocalStorage";
+import { getData } from "../utils/Api";
 import "../styles/Cart.css";
 import { Dispatch, SetStateAction, useEffect, useState } from "react";
 import useCartTotal from "../hooks/useCartTotal";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faXmark } from "@fortawesome/free-solid-svg-icons";
-import RemoveFromCart from "./RemoveFromCart";
 import CartItem from "./CartItem";
-import AddRemoveCart from "./AddRemoveCart";
+import QuantityButtons from "./QuantityButtons";
+import { useUserContext } from "../contexts/UserContext";
 
 export type Products = {
   count: number;
@@ -30,15 +29,14 @@ type Props = {
 const Cart = ({ setBlur, setShowCart }: Props) => {
   const [total, setTotal] = useState(0);
   const [numOfProducts, setNumOfProducts] = useState<number[]>([]);
-  const [itemToDelete, setItemToDelete] = useState(0);
+
+  const { user } = useUserContext();
 
   const { data: products } = useQuery({
-    queryKey: ["cart"],
+    queryKey: ["cart", user?.userId],
     queryFn: () =>
-      getProducts<Products, { userId: number | string }>(
-        "https://online-store-backend-zeta.vercel.app/cart",
-        { userId: getLocalStorage("userId") }
-      ),
+      getData<Products, { userId: number }>("/api/cart", { userId: user?.userId as number }),
+    enabled: !!user?.userId
   });
 
   const { total: cartTotal } = useCartTotal(products, total, setTotal);
@@ -87,8 +85,6 @@ const Cart = ({ setBlur, setShowCart }: Props) => {
     setShowCart(false);
   };
 
-  RemoveFromCart(getLocalStorage("userId"), itemToDelete);
-
   return (
     <div className="cart-container">
       <div className="cart-header">
@@ -108,7 +104,7 @@ const Cart = ({ setBlur, setShowCart }: Props) => {
           products?.map((product, index) => (
             <CartItem
               children={ 
-                <AddRemoveCart 
+                <QuantityButtons
                   isCart={true}
                   handleMinusClick={() => handleMinusClick(index, product.price)}
                   handlePlusClick={() => handlePlusClick(index, product.price)}
@@ -117,7 +113,6 @@ const Cart = ({ setBlur, setShowCart }: Props) => {
                 />
               }
               product={product}
-              setItemToDelete={setItemToDelete}
             />
           ))
         }
