@@ -2,7 +2,7 @@ import '../styles/Footer.css';
 import { Link } from 'react-router-dom';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import {  faLinkedin, faGithub, faPlaystation, faXbox, } from '@fortawesome/free-brands-svg-icons';
-import { faChair, faCode, faComputerMouse, faGamepad, faHeadset, faHome, faKeyboard } from '@fortawesome/free-solid-svg-icons';
+import { faChair, faComputerMouse, faGamepad, faHeadset, faHome, faKeyboard } from '@fortawesome/free-solid-svg-icons';
 import { HashLink } from 'react-router-hash-link';
 import { Dispatch, SetStateAction } from 'react';
 
@@ -48,10 +48,10 @@ const Footer = ({ setCategory }: { setCategory: Dispatch<SetStateAction<string>>
                     <HashLink to="/#" smooth={true}>
                         <li>Home &nbsp; <FontAwesomeIcon icon={faHome} /></li>
                     </HashLink>
-                    <a href="https://www.linkedin.com/in/scott-hahn" target="_blank" >
+                    <a href="https://www.linkedin.com/in/scott-hahn" target="_blank" rel="noreferrer">
                         <li>LinkedIn &nbsp; <FontAwesomeIcon icon={faLinkedin} /></li>
                     </a>
-                    <a href='https://github.com/ScottHahn1' target='_blank'>
+                    <a href='https://github.com/ScottHahn1' target='_blank' rel="noreferrer">
                         <li>GitHub &nbsp; <FontAwesomeIcon icon={faGithub}/></li>  
                     </a>
                 </ul>
