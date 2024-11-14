@@ -11,28 +11,30 @@ import Cart from "./components/Cart";
 import Footer from "./components/Footer";
 import MobileMenu from "./components/MobileMenu";
 import useWindowResize from "./hooks/useWindowResize";
-import {
-  getLocalStorage,
-  getSessionStorage,
-  setSessionStorage,
-} from "./utils/LocalStorage";
+import { getSessionStorage, setSessionStorage } from "./utils/LocalStorage";
+import useAuth from "./hooks/useAuth";
 
 const App = () => {
+  const [loggedIn, setLoggedIn] = useState<boolean | null>(null);
   const [showCart, setShowCart] = useState(false);
   const [blur, setBlur] = useState(false);
-  const [clickedCategory, setClickedCategory] = useState(
-    getSessionStorage("clickedCategory")
-  );
-  const [loggedIn, setLoggedIn] = useState(getLocalStorage("token"));
+  const [clickedCategory, setClickedCategory] = useState(getSessionStorage("clickedCategory"));
+
+  const { data: user } = useAuth();
 
   useEffect(() => {
-    clickedCategory && setSessionStorage("clickedCategory", clickedCategory);
+    user && setLoggedIn(true);
+  }, [user])
+
+  useEffect(() => {
+    clickedCategory && setSessionStorage('clickedCategory', clickedCategory);
   }, [clickedCategory]);
 
   const windowWidth = useWindowResize();
   
-  const renderNav = windowWidth > 600 ?
-  <Navbar setShowCart={setShowCart} blur={blur} loggedIn={loggedIn} setLoggedIn={setLoggedIn} /> :
+  const renderNav = windowWidth > 600 ? 
+  <Navbar setShowCart={setShowCart} blur={blur} loggedIn={loggedIn} /> 
+  :
   <MobileMenu setShowCart={setShowCart} blur={blur} loggedIn={loggedIn} setLoggedIn={setLoggedIn} />
 
   return (
@@ -41,22 +43,11 @@ const App = () => {
         {renderNav}
         {showCart && <Cart setBlur={setBlur} setShowCart={setShowCart} />}
         <Routes>
-          <Route
-            path="/"
-            index
-            element={<Home blur={blur} setCategory={setClickedCategory} />}
-          />
-          <Route path="/register" element={<Register />} />
-          <Route path="/login" element={<Login setLoggedIn={setLoggedIn} />} />
-          <Route path="/products" element={
-              <ProductsPage
-                category={clickedCategory}
-                setCategory={setClickedCategory}
-                blur={blur}
-              />
-            }
-          />
-          <Route path="/product" element={<Product blur={blur} />} />
+          <Route path='/' index element={<Home blur={blur} setCategory={setClickedCategory} />} />
+          <Route path='/register' element={<Register />} />
+          <Route path='/login' element={<Login loggedIn={loggedIn} setLoggedIn={setLoggedIn} />} />
+          <Route path='/products' element={<ProductsPage loggedIn={loggedIn} category={clickedCategory} setCategory={setClickedCategory} blur={blur} />} />
+          <Route path='/product' element={<Product blur={blur} loggedIn={loggedIn} />} />
         </Routes>
         <Footer setCategory={setClickedCategory} />
       </BrowserRouter>
