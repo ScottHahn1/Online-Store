@@ -1,5 +1,5 @@
 import { Link } from "react-router-dom";
-import { getLocalStorage, setSessionStorage } from "../utils/LocalStorage";
+import { setSessionStorage } from "../utils/LocalStorage";
 import AddProductToCart from "./AddProductToCart";
 
 type Data = {
@@ -19,18 +19,19 @@ type Data = {
 };
 
 type Props = {
+  loggedIn: boolean | null;
   product: Data;
 };
 
-const ProductCard = ({ product }: Props) => {
+const ProductCard = ({ loggedIn, product }: Props) => {
   return (
     <div
-      className="card"
+      className='card'
       onClick={() => {
-        setSessionStorage("product", product.productId);
+        setSessionStorage('product', product.productId);
       }}
     >
-      <Link to={"/product"}>
+      <Link to={'/product'}>
         <img src={product.image} alt={product.title} />
       </Link>
       <h4>{product.title}</h4>
@@ -38,15 +39,15 @@ const ProductCard = ({ product }: Props) => {
         {product.rating} ({product.ratingCount} reviews)
       </p>
       <p>
-        {new Intl.NumberFormat("en-ZA", {
-          style: "currency",
-          currency: "ZAR",
+        {new Intl.NumberFormat('en-ZA', {
+          style: 'currency',
+          currency: 'ZAR',
           minimumFractionDigits: 2,
         }).format(product.price)}
       </p>
 
       <AddProductToCart
-        userId={getLocalStorage("userId")}
+        loggedIn={loggedIn}
         productId={product.productId}
         title={product.title}
         brand={product.brand}
