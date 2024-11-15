@@ -1,5 +1,5 @@
 import { useQuery } from "@tanstack/react-query";
-import { getProducts } from "../utils/Api";
+import { getData } from "../utils/Api";
 import { getSessionStorage, setSessionStorage } from "../utils/LocalStorage";
 import { useEffect, useState } from "react";
 import arrayShuffle from "array-shuffle";
@@ -25,11 +25,11 @@ const Similar = ({ product, productId, category }: Props) => {
   const { data } = useQuery({
     queryKey: ["similar", product],
     queryFn: () =>
-      getProducts<Data, Props>(`https://online-store-backend-zeta.vercel.app/products/similar`, {
+      getData<Data, Props>('/api/products/similar', {
         productId: productId,
         category: category,
       }),
-    enabled: !!getSessionStorage("product"),
+    enabled: !!getSessionStorage('product'),
   });
 
   const [shuffledData, setShuffledData] = useState<Data>([]);
@@ -43,21 +43,21 @@ const Similar = ({ product, productId, category }: Props) => {
   useEffect(() => {
     window.scrollTo({
       top: 0,
-      behavior: "smooth",
+      behavior: 'smooth',
     });
   }, [shuffledData]);
 
   return (
-    <div className="similar" style={{ textAlign: "center" }}>
+    <div className='similar' style={{ textAlign: 'center' }}>
       <h2>Similar Products</h2>
-      <div className="cards">
+      <div className='cards'>
         {shuffledData &&
           shuffledData
             .map((product) => (
               <div
-                className="card"
+                className='card'
                 onClick={() => {
-                  setSessionStorage("product", product.productId);
+                  setSessionStorage('product', product.productId);
                 }}
                 key={product.productId}
               >
@@ -67,9 +67,9 @@ const Similar = ({ product, productId, category }: Props) => {
                   onClick={() => window.location.reload()}
                 />
                 <h4>{product.title}</h4>
-                {new Intl.NumberFormat("en-ZA", {
-                  style: "currency",
-                  currency: "ZAR",
+                {new Intl.NumberFormat('en-ZA', {
+                  style: 'currency',
+                  currency: 'ZAR',
                   minimumFractionDigits: 2,
                 }).format(product.price)}
               </div>
