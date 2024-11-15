@@ -2,111 +2,100 @@ import { useMutation } from "@tanstack/react-query";
 import { Dispatch, SetStateAction, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { postData } from "../utils/Api";
-import { setLocalStorage } from "../utils/LocalStorage";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faEye, faEyeSlash } from "@fortawesome/free-solid-svg-icons";
+import { useUserContext } from "../contexts/UserContext";
+
+type LoginProps = {
+  loggedIn: boolean | null;
+  setLoggedIn: Dispatch<SetStateAction<boolean | null>>;
+}
 
 type PostVariables = {
   url: string;
   body: {
     username: string;
     password: string;
-  };
+  }
 };
 
-const Login = ({
-  setLoggedIn,
-}: {
-  setLoggedIn: Dispatch<SetStateAction<string>>;
-}) => {
-  const [username, setUsername] = useState("");
-  const [password, setPassword] = useState("");
-  const [loginSuccessful, setLoginSuccessful] = useState(false);
-  const [error, setError] = useState("");
+const Login = ({ loggedIn, setLoggedIn }: LoginProps) => {
+  const [username, setUsername] = useState('');
+  const [password, setPassword] = useState('');
+  const [error, setError] = useState('');
   const [showPassword, setShowPassword] = useState(true);
 
   const navigate = useNavigate();
 
+  const { setUser } = useUserContext();
+
   const { mutate } = useMutation({
     mutationFn: (variables: PostVariables) => postData(variables),
     onSuccess: (data) => {
-      if (data.success) {        // if login is successful
+      if (data.success) {      
+        setUser({ userId: data.userId, username: data.username })
         error && setError("");
-        setLocalStorage("token", data.token);
-        setLocalStorage("userId", data.userId);
-        setLocalStorage("username", data.username);
-        setLoginSuccessful(true);
-        setTimeout(() => {
-          setLoggedIn("token");
-          navigate("/");
-        }, 2000);
-      } else {                  //if login fails
+        setLoggedIn(true);
+      } else {                  
         setError(data.message);
-        setUsername("");
-        setPassword("");
+        setUsername('');
+        setPassword('');
       }
-    },
-    onError: (err) => {
-      console.log(err)
     }
   });
 
-  const login = (e: React.MouseEvent<HTMLFormElement>) => {
+  const login = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     mutate({
-      url: "https://online-store-backend-zeta.vercel.app/users/login",
+      url: '/api/users/login',
       body: {
         username: username,
         password: password,
       },
     });
-    loginSuccessful && window.location.reload();
+    setTimeout(() => navigate('/'), 2000);
   };
 
   return (
-    <div className="register-login">
+    <div className='register-login'>
       <h2>Login</h2>
       <form onSubmit={login}>
         <label>
           Username <br></br>
           <input
-            className="form-input"
-            type="text"
+            className='form-input'
+            type='text'
             value={username}
             onChange={(e) => setUsername(e.target.value)}
           />
         </label>
         <label>
-          <div
-            className="show-password"
-            onClick={() => setShowPassword(!showPassword)}
-          >
-            {showPassword ? "Hide Password" : "Show Password"}
-            {showPassword ? (
-              <FontAwesomeIcon icon={faEyeSlash} />
-            ) : (
-              <FontAwesomeIcon icon={faEye} />
-            )}
+          <div className='show-password' onClick={() => setShowPassword(!showPassword)}>
+            {showPassword ? 'Hide Password' : 'Show Password'}
+            {showPassword ? <FontAwesomeIcon icon={faEyeSlash} /> : <FontAwesomeIcon icon={faEye} />}
           </div>
-          Password <br></br>
+          Password 
+          <br></br>
           <input
-            className="form-input"
-            type={showPassword ? "text" : "password"}
+            className='form-input'
+            type={showPassword ? 'text' : 'password'}
             value={password}
             onChange={(e) => setPassword(e.target.value)}
           />
         </label>
-        <button type="submit">Login</button>
+        <button type='submit'>Login</button>
       </form>
 
-      {loginSuccessful && (
-        <div className="login-successful-popup">
-          Login Successful!
-          <div className="loading-line"></div>
-        </div>
-      )}
+      {
+        loggedIn && (
+          <div>
+            Login Successful! Redirecting to home page...
+            <div className='loading-line'></div>
+          </div>
+        )
+      }
 
-      {error ? error : <div></div>}
+      {error && error}
     </div>
   );
 };
