@@ -1,11 +1,11 @@
 import { useQuery } from "@tanstack/react-query";
-import { getProducts } from "../utils/Api";
+import { getData } from "../utils/Api";
 
 const useTotal = (category: string) => {
     const { data: totalProducts } = useQuery({
-        queryKey: ["totalProducts", category],
+        queryKey: ['totalProducts', category],
         queryFn: () =>
-          getProducts<{ count: number }, { category: string }>(`https://online-store-backend-zeta.vercel.app/products/total`, { category: category })
+          getData<{ count: number }, { category: string }>('/api/products/total', { category: category })
     });
 
     return { totalProducts };

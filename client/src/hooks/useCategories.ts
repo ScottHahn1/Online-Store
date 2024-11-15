@@ -1,5 +1,5 @@
 import { useQuery } from "@tanstack/react-query";
-import { getProducts } from "../utils/Api";
+import { getData } from "../utils/Api";
 
 type Data = {
   id: number,
@@ -9,9 +9,9 @@ type Data = {
 
 const useCategories = () => {
     const { data, isLoading } = useQuery({
-      queryKey: ["categories"],
+      queryKey: ['categories'],
       queryFn: () =>
-        getProducts<Data, {}>("https://online-store-backend-zeta.vercel.app/categories", {})
+        getData<Data, {}>('/api/categories', {})
     });
 
     return { data, isLoading };
