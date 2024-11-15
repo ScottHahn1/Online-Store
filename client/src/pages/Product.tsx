@@ -1,7 +1,7 @@
 import { useQuery } from "@tanstack/react-query";
-import { getProducts } from "../utils/Api";
+import { getData } from "../utils/Api";
 import "../styles/Product.css";
-import { getLocalStorage, getSessionStorage } from "../utils/LocalStorage";
+import { getSessionStorage } from "../utils/LocalStorage";
 import Rating from "../components/Rating";
 import Similar from "../components/Similar";
 import AddProductToCart from "../components/AddProductToCart";
@@ -20,34 +20,39 @@ type Data = {
   };
 };
 
-const Product = ({ blur }: { blur: boolean }) => {
+type Props = {
+  blur: boolean;
+  loggedIn: boolean | null;
+}
+
+const Product = ({ blur, loggedIn }: Props) => {
   const { data, isLoading } = useQuery({
-    queryKey: ["product"],
+    queryKey: ['product'],
     queryFn: () =>
-      getProducts<Data, {}>(
-        `https://online-store-backend-zeta.vercel.app/products/${getSessionStorage("product")}`
+      getData<Data, {}>(
+        `/api/products/${getSessionStorage('product')}`
       ),
-    enabled: !!getSessionStorage("product"),
+    enabled: !!getSessionStorage('product'),
   });
 
   return (
-    <div style={{ filter: blur ? "blur(3px)" : "" }}>
+    <div style={{ filter: blur ? 'blur(3px)' : '' }}>
       {!isLoading && data && (
-        <div className="product">
-          <div className="product-image-description">
+        <div className='product'>
+          <div className='product-image-description'>
             <img src={data.image} alt={data.title} />
-            <p className="product-description">{data.overview}</p>
+            <p className='product-description'>{data.overview}</p>
           </div>
 
-          <div className="product-info">
-            <div className="product-brand">{data.brand}</div>
+          <div className='product-info'>
+            <div className='product-brand'>{data.brand}</div>
 
-            <div className="product-title">{data.title}</div>
+            <div className='product-title'>{data.title}</div>
 
-            <div className="product-price">
-              {new Intl.NumberFormat("en-ZA", {
-                style: "currency",
-                currency: "ZAR",
+            <div className='product-price'>
+              {new Intl.NumberFormat('en-ZA', {
+                style: 'currency',
+                currency: 'ZAR',
                 minimumFractionDigits: 2,
               }).format(data.price)}
             </div>
@@ -55,7 +60,7 @@ const Product = ({ blur }: { blur: boolean }) => {
             <Rating rating={data.rating} ratingCount={data.ratingCount} />
 
             <AddProductToCart
-              userId={getLocalStorage("userId")}
+              loggedIn={loggedIn}
               productId={data.productId}
               title={data.title}
               brand={data.brand}
@@ -69,7 +74,7 @@ const Product = ({ blur }: { blur: boolean }) => {
         </div>
       )}
 
-      {isLoading && <div className="loading"></div>}
+      {isLoading && <div className='loading'></div>}
 
       {data && !isLoading && (
         <Similar

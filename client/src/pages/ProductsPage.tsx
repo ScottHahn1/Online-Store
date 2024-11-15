@@ -2,9 +2,9 @@ import { useQuery } from "@tanstack/react-query";
 import { ChangeEvent, Dispatch, SetStateAction, useEffect, useLayoutEffect, useState } from "react";
 import "../styles/Products.css";
 import ProductCard from "../components/ProductCard";
-import axios from "axios";
 import "../styles/Products.css";
 import Categories from "../components/Categories";
+import { getData } from "../utils/Api";
 
 type Data = {
   brand: string;
@@ -23,9 +23,10 @@ type Data = {
 };
 
 type Props = {
+  blur: boolean;
   category: string
+  loggedIn: boolean | null;
   setCategory: Dispatch<SetStateAction<string>>
-  blur: boolean
 }
 
 type QueryParams = {
@@ -34,14 +35,7 @@ type QueryParams = {
   sortBy: string;
 }
 
-const getProducts = async <T, >(url: string, params: T) => {
-  const response = await axios.get(url, {
-    params: params
-  });
-  return response.data;
-}
-
-const ProductsPage = ({ category, setCategory, blur }: Props) => {
+const ProductsPage = ({ category, setCategory, blur, loggedIn }: Props) => {
   const [currentPage, setCurrentPage] = useState(1);
   const [sortBy, setSortBy] = useState('price');
 
@@ -57,13 +51,13 @@ const ProductsPage = ({ category, setCategory, blur }: Props) => {
   //get the total amount of products in a category
   const { data: totalProducts } = useQuery({
     queryKey: ['totalProducts', category],
-    queryFn: () => getProducts<{ category: string }>('https://online-store-backend-zeta.vercel.app/products/total', { category: category })
+    queryFn: () => getData<{ count: number }, { category: string }>('/api/products/total', { category: category })
   })
 
   //get all products in a category
-  const { data: products, isLoading } = useQuery<Data[]>({
+  const { data: products, isLoading } = useQuery({
     queryKey: ['allProducts', category, currentPage, sortBy],
-    queryFn: () => getProducts<QueryParams>('https://online-store-backend-zeta.vercel.app/products', { category: category, page: currentPage, sortBy: sortBy }),
+    queryFn: () => getData<Data[], QueryParams>('/api/products', { category: category, page: currentPage, sortBy: sortBy }),
   });
 
   useEffect(() => {
@@ -86,7 +80,7 @@ const ProductsPage = ({ category, setCategory, blur }: Props) => {
             </select>
           </div>
           <div className='cards'>
-            { products?.map(product => <ProductCard product={product} key={product.productId} />) }
+            { products?.map(product => <ProductCard loggedIn={loggedIn} product={product} key={product.productId} />) }
           </div>
           <div className="pages">
             {
