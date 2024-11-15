@@ -1,6 +1,7 @@
 import { useQueryClient, useMutation } from "@tanstack/react-query";
 import { Dispatch, SetStateAction, useEffect } from "react";
 import { postData } from "../utils/Api";
+import { useUserContext } from "../contexts/UserContext";
 
 type PostVariables = {
   url: string;
@@ -21,7 +22,6 @@ type Params = {
   addToCart: boolean;
   setAddToCart: Dispatch<SetStateAction<boolean>>;
   numOfProduct: number;
-  userId: number;
   productId: number;
   title: string;
   brand: string;
@@ -44,14 +44,16 @@ const useAddProduct = ({ ...params }: Params) => {
       queryClient.invalidateQueries({ queryKey: ["cart"] })
     }
   });
+  
+  const { user } = useUserContext();
 
   useEffect(() => {
-    if (params.addToCart) {
+    if (params.addToCart && user) {
       Array.from({ length: number }).map(_ => {
-        mutate({
-          url: "https://online-store-backend-zeta.vercel.app/cart/add",
+        return mutate({
+          url: '/api/cart/add',
           body: {
-            userId: params.userId,
+            userId: user.userId as number,
             productId: params.productId,
             title: params.title,
             brand: params.brand,
