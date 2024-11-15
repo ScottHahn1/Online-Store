@@ -16,13 +16,13 @@ const FRONTEND_URL = process.env.FRONTEND_URL || "http://localhost:3000";
 app.use(express.json());
 app.use(cookieParser());
 app.use(cors({
-    origin: ["https://online-store-frontend-mocha.vercel.app", FRONTEND_URL],
-    methods: ["GET", "POST", "DELETE"],
+    origin: ['https://online-store-frontend-mocha.vercel.app', FRONTEND_URL],
+    methods: ['GET', 'POST', 'DELETE', 'PATCH', 'PUT'],
     credentials: true
 }));
-app.use("/users", usersRouter);
-app.use("/products", productsRouter);
-app.use("/categories", categoriesRouter);
-app.use("/cart", cartRouter);
+app.use('/api/users', usersRouter);
+app.use('/api/products', productsRouter);
+app.use('/api/categories', categoriesRouter);
+app.use('/api/cart', cartRouter);
 
 app.listen(port, () => console.log(`Server running on port ${port}`));
