@@ -1,8 +1,8 @@
-import axios from "axios";
+import axiosInstance from "./AxiosInstance";
 
-const getProducts = async <T, U>(url: string, params?: U) => {
+const getData = async <T, U>(url: string, params?: U) => {
     try {
-        const response = await axios.get(url, {
+        const response = await axiosInstance.get(url, {
             params: params
         });
         const data: T = await response.data;
@@ -20,7 +20,7 @@ type MutateParams = {
 }
 
 const postData = async ({ url, body }: MutateParams) => {
-    const postRequest = await axios.post(url, 
+    const postRequest = await axiosInstance.post(url, 
         body
     ).then(res => {
         return res.data;
@@ -32,7 +32,7 @@ const postData = async ({ url, body }: MutateParams) => {
 }
 
 const deleteData = async (url: string) => {
-    const deleteRequest = await axios.delete(url)
+    const deleteRequest = await axiosInstance.delete(url)
     .then(res => {
         return res.data;
     }).catch(error => {
@@ -42,4 +42,4 @@ const deleteData = async (url: string) => {
     return deleteRequest;
 }
 
-export { getProducts, postData, deleteData };
+export { getData, postData, deleteData };
