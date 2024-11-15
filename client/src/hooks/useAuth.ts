@@ -1,5 +1,6 @@
 import { useQuery } from "@tanstack/react-query";
 import axiosInstance from "../utils/AxiosInstance";
+import { useUserContext } from "../contexts/UserContext";
 
 const fetchUser = async () => {
   try {
@@ -11,11 +12,19 @@ const fetchUser = async () => {
 };
 
 const useAuth = () => {
-  return useQuery({
+  const { setUser } = useUserContext();
+
+  const { data } = useQuery({
     queryKey: ['auth'],
     queryFn: fetchUser,
     retry: false
-  })
+  });
+
+  if (data) {
+    setUser(data);
+  }
+
+  return { data };
 };
 
 export default useAuth;
