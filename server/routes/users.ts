@@ -1,12 +1,13 @@
-import { Router } from "express";
+import { Response, Router } from "express";
 import pool from "../database";
 import bcrypt from 'bcrypt';
-import jwt from "jsonwebtoken";
+import jwt, { JwtPayload } from "jsonwebtoken";
+import authenticateToken from "../middlewares/authToken";
+import { Request } from "express";
 
 const usersRouter = Router();
 const salt = 10;
 
-//register 
 usersRouter.post('/register', async (req, res) => {
     const sql = 'INSERT INTO users (username, password) VALUES (?, ?)';
     const { username, password } = req.body;
@@ -30,7 +31,6 @@ usersRouter.post('/register', async (req, res) => {
     }
 })
 
-//login
 usersRouter.post('/login', (req, res) => {
     const sql = 'SELECT * FROM users WHERE username = ?';
     const { username, password } = req.body;
@@ -49,11 +49,12 @@ usersRouter.post('/login', (req, res) => {
                 if (response) {
                     const userId = result[0].userId;
                     const token = jwt.sign({ userId }, process.env.ACCESS_TOKEN_SECRET as string, { expiresIn: '1h' });
-                    res.cookie('authToken', token, 
+                    res.cookie('authToken', token,
                         { 
                             httpOnly: true, 
-                            secure: process.env.COOKIE_SECURE === 'true',
-                            sameSite: 'strict'
+                            secure: process.env.REACT_APP_NODE_ENV === 'production', // check if app is in production or development
+                            sameSite: process.env.REACT_APP_NODE_ENV === 'production' ? 'strict' : 'lax',
+                            maxAge: 1 * 60 * 60 * 1000 // 1 hour
                         }
                     );
                     return res.status(200).json({ success: true, login: true, message: 'Login Successful!', token, userId, username });
@@ -67,5 +68,44 @@ usersRouter.post('/login', (req, res) => {
 
     })
 })
+
+interface CustomJwtPayload extends JwtPayload {
+    userId: number;
+    username: string;
+}
+
+interface CustomRequest extends Request {
+    user?: CustomJwtPayload;
+}
+
+usersRouter.get('/me', authenticateToken, (req: CustomRequest, res: Response) => {
+    if (!req.user) {
+        return res.status(401).json({ message: 'Authentication required.' });
+    }
+
+    const sql = 'SELECT userId, username FROM users WHERE userId = ?';
+    const { userId } = req.user;
+
+    pool.query(sql, [userId], (error, result: any) => {
+        if (error) {
+            res.status(500).json({ error: 'Internal server error!' });
+        } 
+
+        if (result.length === 0) {
+            return res.status(404).json({ message: 'User not found' });
+        }
+
+        return res.status(200).json(result[0]);
+    });
+})
+
+usersRouter.post('/logout', (req, res) => {
+  res.clearCookie('authToken', {
+    httpOnly: true,
+    secure: process.env.REACT_APP_NODE_ENV === 'production',
+    sameSite: process.env.REACT_APP_NODE_ENV === 'production' ? 'strict' : 'lax',
+  });
+  res.status(200).json({ message: 'Logged out successfully' });
+});
 
 export default usersRouter;
