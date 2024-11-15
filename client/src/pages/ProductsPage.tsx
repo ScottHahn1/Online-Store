@@ -5,6 +5,7 @@ import ProductCard from "../components/ProductCard";
 import "../styles/Products.css";
 import Categories from "../components/Categories";
 import { getData } from "../utils/Api";
+import axiosInstance from "../utils/AxiosInstance";
 
 type Data = {
   brand: string;
@@ -57,7 +58,7 @@ const ProductsPage = ({ category, setCategory, blur, loggedIn }: Props) => {
   //get all products in a category
   const { data: products, isLoading } = useQuery({
     queryKey: ['allProducts', category, currentPage, sortBy],
-    queryFn: () => getData<Data[], QueryParams>('/api/products', { category: category, page: currentPage, sortBy: sortBy }),
+    queryFn: () => getData<Data[], QueryParams>(`${axiosInstance.defaults.baseURL}/api/products`, { category: category, page: currentPage, sortBy: sortBy }),
   });
 
   useEffect(() => {
