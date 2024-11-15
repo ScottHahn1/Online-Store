@@ -30,14 +30,14 @@ const Register = () => {
     onSuccess: (data) => {
       if (data.sqlMessage) {
         setRegisterSuccessful(false);
-        setError("Username already exists! Pick a different username");
-        setUsername("");
-        setPassword("");
-        setConfirmPassword("");
+        setError('Username already exists! Pick a different username');
+        setUsername('');
+        setPassword('');
+        setConfirmPassword('');
       } else {
-        error && setError("");
+        error && setError('');
         setRegisterSuccessful(true);
-        setTimeout(() => navigate("/login"), 2000);
+        setTimeout(() => navigate('/login'), 2000);
       }
     },
   });
@@ -47,7 +47,7 @@ const Register = () => {
     if (username && password && confirmPassword) {
       if (password === confirmPassword) {
         mutate({
-          url: "https://online-store-backend-zeta.vercel.app/users/register",
+          url: '/api/users/register',
           body: {
             username: username,
             password: password,
@@ -60,47 +60,48 @@ const Register = () => {
         setConfirmPassword("");
       }
     } else {
-      setError("Username/Password can not be empty!");
+      setError('Username/Password can not be empty!');
     }
   };
 
   return (
-    <div className="register-login">
+    <div className='register-login'>
       <h2>Register</h2>
       <form onSubmit={signUp}>
         <label>
           Username <br></br>
           <input
-            className="form-input"
-            type="text"
+            className='form-input'
+            type='text'
             value={username}
             onChange={(e) => setUsername(e.target.value)}
           />
         </label>
 
         <label>
-          <div className="show-password" onClick={ () => setShowPassword(!showPassword) }>
-            { showPassword ? "Hide Password" : "Show Password" }
+          <div className='show-password' onClick={ () => setShowPassword(!showPassword) }>
+            { showPassword ? 'Hide Password' : 'Show Password' }
             { showPassword ? <FontAwesomeIcon icon={faEyeSlash} /> : <FontAwesomeIcon icon={faEye} /> }
           </div>
-          Password <br></br>
+          Password 
+          <br></br>
           <input
-            className="form-input"
-            type={ showPassword ? "text" : "password" }
+            className='form-input'
+            type={showPassword ? "text" : "password"}
             value={password}
             onChange={(e) => setPassword(e.target.value)}
           />
         </label>
 
         <label>
-          <div className="show-password" onClick={ () => setShowPassword(!showPassword) }>
-            { showPassword ? "Hide Password" : "Show Password" }
+          <div className='show-password' onClick={ () => setShowPassword(!showPassword) }>
+            { showPassword ? 'Hide Password' : 'Show Password' }
             { showPassword ? <FontAwesomeIcon icon={faEyeSlash} /> : <FontAwesomeIcon icon={faEye} /> }
           </div>
           Confirm Password <br></br>
           <input
-            className="form-input"
-            type={ showPassword ? "text" : "password" }
+            className='form-input'
+            type={ showPassword ? 'text' : 'password' }
             value={confirmPassword}
             onChange={(e) => setConfirmPassword(e.target.value)}
           />
@@ -113,16 +114,12 @@ const Register = () => {
         registerSuccessful && (
           <div>
             Register Successful! Redirecting to login...
-            <div className="loading-line"></div>
+            <div className='loading-line'></div>
           </div>
         )
       }
 
-      {
-        error ? error 
-        : 
-        <div></div>
-      }
+      { error && error }
     </div>
   );
 };
