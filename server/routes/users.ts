@@ -53,7 +53,7 @@ usersRouter.post('/login', (req, res) => {
                         { 
                             httpOnly: true, 
                             secure: process.env.REACT_APP_NODE_ENV === 'production', // check if app is in production or development
-                            sameSite: process.env.REACT_APP_NODE_ENV === 'production' ? 'strict' : 'lax',
+                            sameSite: 'none',
                             maxAge: 1 * 60 * 60 * 1000 // 1 hour
                         }
                     );
