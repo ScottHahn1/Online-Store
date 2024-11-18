@@ -5,7 +5,7 @@ import { useUserContext } from "../contexts/UserContext";
 const fetchUser = async () => {
   try {
     const response = await axiosInstance.get('/api/users/me');
-    return response.data;
+    return response.data || {};
   } catch (err) {
     console.log(err);
   }
