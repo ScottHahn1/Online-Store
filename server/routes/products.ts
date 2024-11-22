@@ -22,7 +22,6 @@ productsRouter.get("/", (req, res) => {
     if (sortBy === 'title') {
       sql = `SELECT * FROM products WHERE category->"$.name" = ? ORDER BY ${sortBy} ASC, productId LIMIT ? OFFSET ?`;
     } else {
-      console.log(category)
       sql = `SELECT * FROM products WHERE category->"$.name" = ? ORDER BY ${sortBy} DESC, productId LIMIT ? OFFSET ?`;
     }
   }
