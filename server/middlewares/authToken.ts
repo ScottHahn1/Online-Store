@@ -9,7 +9,7 @@ interface CustomRequest extends Request {
 }
 
 const authenticateToken = (req: CustomRequest, res: Response, next: NextFunction) => {
-    const token = req.cookies.authToken;
+    const token = req.cookies.accessToken;
 
     if (!token) {
         return res.status(401).json({ message: 'Authentication required. Please provide a valid token.' });
