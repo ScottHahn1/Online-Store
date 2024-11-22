@@ -48,16 +48,19 @@ usersRouter.post('/login', (req, res) => {
 
                 if (response) {
                     const userId = result[0].userId;
-                    const token = jwt.sign({ userId }, process.env.ACCESS_TOKEN_SECRET as string, { expiresIn: '1h' });
-                    res.cookie('authToken', token,
+
+                    const accessToken = jwt.sign({ userId }, process.env.ACCESS_TOKEN_SECRET as string, { expiresIn: '15m' });
+                    const refreshToken = jwt.sign({ userId }, process.env.REFRESH_TOKEN_SECRET as string, { expiresIn: '7d' });
+
+                    res.cookie('refreshToken', refreshToken,
                         { 
                             httpOnly: true, 
-                            secure: process.env.REACT_APP_NODE_ENV === 'production', // check if app is in production or development
-                            sameSite: 'none',
-                            maxAge: 1 * 60 * 60 * 1000 // 1 hour
+                            secure: process.env.REACT_APP_NODE_ENV === 'production',
+                            sameSite: process.env.REACT_APP_NODE_ENV === 'production' ? 'none' : 'lax',
+                            maxAge: 7 * 24 * 60 * 60 * 1000 // 7 days
                         }
                     );
-                    return res.status(200).json({ success: true, login: true, message: 'Login Successful!', token, userId, username });
+                    return res.status(200).json({ success: true, login: true, message: 'Login Successful!', token: accessToken, userId, username });
                 } else {
                     return res.status(401).json({ success: false, message: 'Invalid username or password' });
                 }
@@ -99,13 +102,45 @@ usersRouter.get('/me', authenticateToken, (req: CustomRequest, res: Response) =>
     });
 })
 
+usersRouter.post('/refresh-token', (req: CustomRequest, res: Response) => {
+    const refreshToken = req.cookies.refreshToken;
+
+    if (!refreshToken) {
+        return res.status(401).json({ message: 'No refresh token provided.' });
+    }
+
+    jwt.verify(refreshToken, process.env.REFRESH_TOKEN_SECRET as string, (err: any, user: any) => {
+        if (err) {
+            return res.status(403).json({ message: 'Invalid refresh token.' });
+        }
+
+        const newAccessToken = jwt.sign({ userId: user.userId}, process.env.ACCESS_TOKEN_SECRET as string, { expiresIn: '15m' });
+
+        res.cookie('accessToken', newAccessToken, {
+            httpOnly: true,
+            secure: process.env.REACT_APP_NODE_ENV === 'production',
+            sameSite: process.env.REACT_APP_NODE_ENV === 'production' ? 'none' : 'lax',
+            maxAge: 15 * 60 * 1000, // 15 minutes
+        });
+
+        res.json({ message: 'New access token issued'});
+    });
+});
+
 usersRouter.post('/logout', (req, res) => {
-  res.clearCookie('authToken', {
-    httpOnly: true,
-    secure: process.env.REACT_APP_NODE_ENV === 'production',
-    sameSite: process.env.REACT_APP_NODE_ENV === 'production' ? 'strict' : 'lax',
-  });
-  res.status(200).json({ message: 'Logged out successfully' });
+    res.clearCookie('accessToken', {
+        httpOnly: true,
+        secure: process.env.REACT_APP_NODE_ENV === 'production',
+        sameSite: process.env.REACT_APP_NODE_ENV === 'production' ? 'none' : 'lax'
+    });
+
+    res.clearCookie('refreshToken', {
+        httpOnly: true,
+        secure: process.env.REACT_APP_NODE_ENV === 'production',
+        sameSite: process.env.REACT_APP_NODE_ENV === 'production' ? 'none' : 'lax'
+    });
+    
+    res.status(200).json({ message: 'Logged out successfully' });
 });
 
 export default usersRouter;
