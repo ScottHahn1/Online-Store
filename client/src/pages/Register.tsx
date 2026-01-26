@@ -18,13 +18,12 @@ const Register = () => {
   const [confirmPassword, setConfirmPassword] = useState("");
   const [registerSuccessful, setRegisterSuccessful] = useState(false);
   const [error, setError] = useState("");
-  const [showPassword, setShowPassword] = useState(true);
 
   const navigate = useNavigate();
 
   const { mutate } = useMutation({
     mutationFn: (variables: PostVariables) => postData(variables),
-    
+
     onSuccess: (data) => {
       if (data.error) {
         setRegisterSuccessful(false);
@@ -37,84 +36,57 @@ const Register = () => {
     },
   });
 
-  const signUp = async (e: React.FormEvent<HTMLFormElement>) => {
+  const signUp = async (e: React.FormEvent<HTMLFormElement>): Promise<void> => {
     e.preventDefault();
-    if (username && password && confirmPassword) {
-      if (password === confirmPassword) {
-        mutate({
-          url: '/api/users/register',
-          body: {
-            username: username,
-            password: password,
-          },
-        });
-      } else {
-        setError("Passwords don't match!");
-        setUsername("");
-        setPassword("");
-        setConfirmPassword("");
-      }
-    } else {
-      setError('Username/Password can not be empty!');
+
+    if (username.length < 5) {
+      setError("Username must be at least 5 characters");
+      return;
     }
+
+    if (password.length < 8) {
+      setError("Password must be at least 8 characters");
+      return;
+    }
+
+    if (password !== confirmPassword) {
+      setError("Passwords don't match!");
+      return;
+    }
+
+    setError("");
+
+    mutate({
+      url: "/api/users/register",
+      body: {
+        username,
+        password,
+      },
+    });
   };
 
   return (
-    <div className='register-login'>
+    <div className="register-login">
       <h2>Register</h2>
-      <form onSubmit={signUp}>
-        <label>
-          Username <br></br>
-          <input
-            className='form-input'
-            type='text'
-            value={username}
-            onChange={(e) => setUsername(e.target.value)}
-          />
-        </label>
 
-        <label>
-          <div className='show-password' onClick={ () => setShowPassword(!showPassword) }>
-            { showPassword ? 'Hide Password' : 'Show Password' }
-            { showPassword ? <FontAwesomeIcon icon={faEyeSlash} /> : <FontAwesomeIcon icon={faEye} /> }
-          </div>
-          Password 
-          <br></br>
-          <input
-            className='form-input'
-            type={showPassword ? "text" : "password"}
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-          />
-        </label>
+      <RegisterForm
+        handleSubmit={signUp}
+        username={username}
+        setUsername={setUsername}
+        setError={setError}
+        error={error}
+        setPassword={setPassword}
+        password={password}
+        confirmPassword={confirmPassword}
+        setConfirmPassword={setConfirmPassword}
+      />
 
-        <label>
-          <div className='show-password' onClick={ () => setShowPassword(!showPassword) }>
-            { showPassword ? 'Hide Password' : 'Show Password' }
-            { showPassword ? <FontAwesomeIcon icon={faEyeSlash} /> : <FontAwesomeIcon icon={faEye} /> }
-          </div>
-          Confirm Password <br></br>
-          <input
-            className='form-input'
-            type={ showPassword ? 'text' : 'password' }
-            value={confirmPassword}
-            onChange={(e) => setConfirmPassword(e.target.value)}
-          />
-        </label>
-        
-        <button type="submit">Sign Up</button>
-      </form>
-
-      {
-        registerSuccessful && (
-          <div>
-            Register Successful! Redirecting to login...
-            <div className='loading-line'></div>
-          </div>
-        )
-      }
-
-      { error && error }
+      {registerSuccessful && (
+        <div>
+          Register Successful! Redirecting to login...
+          <div className="loading-line"></div>
+        </div>
+      )}
     </div>
   );
 };
