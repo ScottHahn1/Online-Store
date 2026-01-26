@@ -26,16 +26,13 @@ const Register = () => {
     mutationFn: (variables: PostVariables) => postData(variables),
     
     onSuccess: (data) => {
-      if (data.sqlMessage) {
+      if (data.error) {
         setRegisterSuccessful(false);
-        setError('Username already exists! Pick a different username');
-        setUsername('');
-        setPassword('');
-        setConfirmPassword('');
+        setError("Username already exists! Pick a different username");
       } else {
-        error && setError('');
+        error && setError("");
         setRegisterSuccessful(true);
-        setTimeout(() => navigate('/login'), 2000);
+        setTimeout(() => navigate("/login"), 2000);
       }
     },
   });
