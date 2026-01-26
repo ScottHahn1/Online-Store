@@ -37,7 +37,7 @@ button {
   flex-direction: column;
   justify-content: center;
   align-items: center;
-  gap: 2rem;
+  gap: 1rem;
   margin-top: 5rem;
   font-family: "Poppins";
 }
@@ -48,6 +48,22 @@ form {
   align-items: center;
   position: relative;
   justify-content: center;
+}
+
+.form-group {
+  display: flex;
+  flex-direction: column;
+}
+
+.input-hint, .input-error {
+  margin: 0;
+  font-size: .85rem;
+  color:  #4b5563;
+}
+
+.input-error {
+  color: red;
+  margin-bottom: .5rem;
 }
 
 .form-input {
@@ -65,6 +81,15 @@ form button {
   padding: 0 1rem;
   font-size: 1.5rem;
   transition: all .5s ease;
+}
+
+form button:disabled {
+  background-color: #2e2e2e;     
+  color: #c2bfbf;              
+  border-color: #555;
+  box-shadow: none;          
+  opacity: 0.6;
+  cursor: not-allowed;
 }
 
 .show-password {
