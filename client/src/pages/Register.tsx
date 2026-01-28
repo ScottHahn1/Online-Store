@@ -29,9 +29,8 @@ const Register = () => {
     onSuccess: (data) => {
       if (data.error) {
         setRegisterSuccessful(false);
-        setError("Username already exists! Pick a different username");
+        setError(data.error);
       } else {
-        error && setError("");
         setRegisterSuccessful(true);
         setTimeout(() => navigate("/login"), 2000);
       }
