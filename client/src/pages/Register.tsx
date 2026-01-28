@@ -77,7 +77,6 @@ const Register = () => {
         setEmail={setEmail}
         username={username}
         setUsername={setUsername}
-        setError={setError}
         error={error}
         setPassword={setPassword}
         password={password}
