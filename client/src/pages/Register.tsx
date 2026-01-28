@@ -7,12 +7,14 @@ import RegisterForm from "../components/RegisterForm";
 type PostVariables = {
   url: string;
   body: {
+    email: string;
     username: string;
     password: string;
   };
 };
 
 const Register = () => {
+  const [email, setEmail] = useState("");
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
@@ -36,7 +38,7 @@ const Register = () => {
     },
   });
 
-  const signUp = async (e: React.FormEvent<HTMLFormElement>): Promise<void> => {
+  const signUp = (e: React.FormEvent<HTMLFormElement>): void => {
     e.preventDefault();
 
     if (username.length < 5) {
@@ -59,6 +61,7 @@ const Register = () => {
     mutate({
       url: "/api/users/register",
       body: {
+        email,
         username,
         password,
       },
@@ -71,6 +74,8 @@ const Register = () => {
 
       <RegisterForm
         handleSubmit={signUp}
+        email={email}
+        setEmail={setEmail}
         username={username}
         setUsername={setUsername}
         setError={setError}
