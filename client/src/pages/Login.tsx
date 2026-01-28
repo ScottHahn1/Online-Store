@@ -2,9 +2,8 @@ import { useMutation } from "@tanstack/react-query";
 import { Dispatch, SetStateAction, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { postData } from "../utils/Api";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faEye, faEyeSlash } from "@fortawesome/free-solid-svg-icons";
 import { useUserContext } from "../contexts/UserContext";
+import LoginForm from "../components/LoginForm";
 
 type LoginProps = {
   loggedIn: boolean | null;
@@ -14,12 +13,14 @@ type LoginProps = {
 type PostVariables = {
   url: string;
   body: {
+email: string;
     username: string;
     password: string;
   }
 };
 
 const Login = ({ loggedIn, setLoggedIn }: LoginProps) => {
+const [email, setEmail] = useState('');
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
@@ -27,33 +28,35 @@ const Login = ({ loggedIn, setLoggedIn }: LoginProps) => {
 
   const navigate = useNavigate();
 
-  const { setUser } = useUserContext();
+  const { setUser, setAccessToken } = useUserContext();
 
   const { mutate } = useMutation({
     mutationFn: (variables: PostVariables) => postData(variables),
     onSuccess: (data) => {
       if (data.success) {      
-        setUser({ userId: data.userId, username: data.username })
-        error && setError("");
+        setUser({ email: data.email, userId: data.userId, username: data.username });
+        setAccessToken(data.token);
         setLoggedIn(true);
+setTimeout(() => navigate('/'), 2000);
       } else {                  
         setError(data.message);
-        setUsername('');
-        setPassword('');
-      }
+              }
     }
   });
 
-  const login = (e: React.FormEvent<HTMLFormElement>) => {
+  const login = (e: React.FormEvent<HTMLFormElement>): void => {
     e.preventDefault();
+
     mutate({
       url: '/api/users/login',
       body: {
+email: email,
         username: username,
         password: password,
       },
     });
-    setTimeout(() => navigate('/'), 2000);
+    
+    setError('')
   };
 
   return (
