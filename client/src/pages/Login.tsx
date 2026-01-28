@@ -13,14 +13,14 @@ type LoginProps = {
 type PostVariables = {
   url: string;
   body: {
-email: string;
+    email: string;
     username: string;
     password: string;
   }
 };
 
 const Login = ({ loggedIn, setLoggedIn }: LoginProps) => {
-const [email, setEmail] = useState('');
+  const [email, setEmail] = useState('');
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
@@ -37,10 +37,10 @@ const [email, setEmail] = useState('');
         setUser({ email: data.email, userId: data.userId, username: data.username });
         setAccessToken(data.token);
         setLoggedIn(true);
-setTimeout(() => navigate('/'), 2000);
+        setTimeout(() => navigate('/'), 2000);
       } else {                  
         setError(data.message);
-              }
+      }
     }
   });
 
@@ -50,7 +50,7 @@ setTimeout(() => navigate('/'), 2000);
     mutate({
       url: '/api/users/login',
       body: {
-email: email,
+        email: email,
         username: username,
         password: password,
       },
@@ -62,32 +62,19 @@ email: email,
   return (
     <div className='register-login'>
       <h2>Login</h2>
-      <form onSubmit={login}>
-        <label>
-          Username <br></br>
-          <input
-            className='form-input'
-            type='text'
-            value={username}
-            onChange={(e) => setUsername(e.target.value)}
-          />
-        </label>
-        <label>
-          <div className='show-password' onClick={() => setShowPassword(!showPassword)}>
-            {showPassword ? 'Hide Password' : 'Show Password'}
-            {showPassword ? <FontAwesomeIcon icon={faEyeSlash} /> : <FontAwesomeIcon icon={faEye} />}
-          </div>
-          Password 
-          <br></br>
-          <input
-            className='form-input'
-            type={showPassword ? 'text' : 'password'}
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-          />
-        </label>
-        <button type='submit'>Login</button>
-      </form>
+
+      <LoginForm
+        handleSubmit={login}
+        email={email}
+        setEmail={setEmail}
+        username={username}
+        setUsername={setUsername}
+        setShowPassword={setShowPassword}
+        showPassword={showPassword}
+        password={password}
+        setPassword={setPassword}
+        error={error}
+      />
 
       {
         loggedIn && (
@@ -97,8 +84,6 @@ email: email,
           </div>
         )
       }
-
-      {error && error}
     </div>
   );
 };
