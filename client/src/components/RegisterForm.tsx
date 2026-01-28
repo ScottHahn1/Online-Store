@@ -3,10 +3,11 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { Dispatch, SetStateAction, useState } from "react";
 
 interface Props {
-  handleSubmit: (e: React.FormEvent<HTMLFormElement>) => Promise<void>;
+  handleSubmit: (e: React.FormEvent<HTMLFormElement>) => void;
+  email: string;
+  setEmail: Dispatch<SetStateAction<string>>;
   username: string;
   setUsername: Dispatch<SetStateAction<string>>;
-  setError: Dispatch<SetStateAction<string>>;
   error: string;
   setPassword: Dispatch<SetStateAction<string>>;
   password: string;
@@ -16,9 +17,10 @@ interface Props {
 
 const RegisterForm = ({
   handleSubmit,
+  email, 
+  setEmail,
   username,
   setUsername,
-  setError,
   error,
   setPassword,
   password,
@@ -27,16 +29,27 @@ const RegisterForm = ({
 }: Props) => {
   const [showPassword, setShowPassword] = useState(true);
 
-  const handleUsername = (e: React.ChangeEvent<HTMLInputElement>): void => {
-    setUsername(e.target.value);
-    setError('');
-  };
-
   const isFormValid =
   username.length > 0 && password.length >= 8 && password === confirmPassword;
 
   return (
     <form onSubmit={handleSubmit}>
+      <div className="form-group">
+        <label htmlFor="email">Email:</label>
+
+        <input
+          className="form-input"
+          id="email"
+          type="email"
+          placeholder="example@email.com"
+          pattern="[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,}$"
+          value={email}
+          onChange={(e) => setEmail(e.target.value)}
+        />
+
+        {error.includes("Email") && <p className="input-error"> {error} </p>}
+      </div>
+
       <div className="form-group">
         <label htmlFor="username">Username:</label>
 
@@ -45,14 +58,14 @@ const RegisterForm = ({
           id="username"
           type="text"
           value={username}
-          onChange={(e) => handleUsername(e)}
+          onChange={(e) => setUsername(e.target.value)}
         />
 
         {username.length < 5 && (
           <p className="input-hint"> Username must be at least 5 characters </p>
         )}
 
-        {error && <p className="input-error"> {error} </p>}
+        {error.includes("Username") && <p className="input-error"> {error} </p>}
       </div>
 
       <div className="form-group">
