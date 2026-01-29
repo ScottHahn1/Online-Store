@@ -3,41 +3,33 @@ import axiosInstance from "../utils/AxiosInstance";
 import { useUserContext } from "../contexts/UserContext";
 import { useEffect } from "react";
 
-const refreshToken = async () => {
-  try {
-    const response = await axiosInstance.post('/api/users/refresh-token');
-    return response.data.accessToken;
-  } catch (error) {
-    return error;
-  }
-}
-
-const fetchUser = async () => {
-  try {
-    const response = await axiosInstance.get('/api/users/me');
-    return response.data;
-  } catch (error: any) {
-    if (error.response.status === 401) {
-      const newToken = await refreshToken();
-      if (newToken) {
-        const response = await axiosInstance.get('/api/users/me');
-        return response.data;
-      }
-    }
-  }
-};
-
 const useAuth = () => {
-  const { setUser } = useUserContext();
+  const { user, setUser, setAccessToken } = useUserContext();
 
   const { data } = useQuery({
     queryKey: ['auth'],
-    queryFn: fetchUser,
+    queryFn: async () => {
+      try {
+        const refreshTokenRes = await axiosInstance.post('/api/users/refresh-token');
+        const newAccessToken = refreshTokenRes.data.accessToken;
+
+        setAccessToken(newAccessToken);
+
+        const userRes = await axiosInstance.get('/api/users/me', {
+          headers: { Authorization: `Bearer ${newAccessToken}` }
+        });
+        
+        return userRes.data;
+      } catch {
+        return null;
+      }
+    },
+    enabled: !user,
     retry: false
   });
 
   useEffect(() => {
-    if (data) {
+    if (data !== undefined) {
       setUser(data);
     }
   }, [data, setUser])
