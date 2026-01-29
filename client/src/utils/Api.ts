@@ -1,9 +1,16 @@
 import axiosInstance from "./AxiosInstance";
 
-const getData = async <T, U>(url: string, params?: U) => {
+const getData = async <T, U>(url: string, params?: U, accessToken?: string | null) => {
+    const headers: Record<string, string> = {};
+
+    if (accessToken) {
+      headers["Authorization"] = `Bearer ${accessToken}`;
+    }
+    
     try {
         const response = await axiosInstance.get(url, {
-            params: params
+            headers,
+            params
         });
         const data: T = await response.data;
         return data;
