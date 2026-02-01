@@ -6,6 +6,7 @@ import usersRouter from "./routes/users";
 import cartRouter from "./routes/cart";
 import categoriesRouter from "./routes/categories";
 import cookieParser from 'cookie-parser';
+import paymentsRouter from "./routes/payments";
 
 dotenv.config();
 
@@ -24,5 +25,6 @@ app.use('/api/users', usersRouter);
 app.use('/api/products', productsRouter);
 app.use('/api/categories', categoriesRouter);
 app.use('/api/cart', cartRouter);
+app.use('/api/payments', paymentsRouter);
 
 app.listen(port, () => console.log(`Server running on port ${port}`));
