@@ -1,27 +1,30 @@
 import { Response, Router } from "express";
 import pool from "../database";
 import bcrypt from 'bcrypt';
-import jwt, { JwtPayload } from "jsonwebtoken";
-import authenticateToken from "../middlewares/authToken";
-import { Request } from "express";
+import jwt from "jsonwebtoken";
+import authenticateToken, { CustomRequest } from "../middlewares/authToken";
 
 const usersRouter = Router();
 const salt = 10;
 
 usersRouter.post('/register', async (req, res) => {
-    const sql = 'INSERT INTO users (username, password) VALUES (?, ?)';
-    const { username, password } = req.body;
+    const sql = 'INSERT INTO users (email, username, password) VALUES (?, ?, ?)';
+    const { email, username, password } = req.body;
 
-    if (!username || !password) {
-        return res.status(400).json({ error: 'Username and password are required.' });
+    if (!email || !username || !password) {
+        return res.status(400).json({ error: 'Email, username and password are required.' });
     }
 
     try {
         const hash = await bcrypt.hash(password, salt);
 
-        pool.query(sql, [username, hash], (error, result) => {
-            if (error) {
-                res.status(500).json({ error: 'Internal server error!' });
+        pool.query(sql, [email, username, hash], (error, result) => {
+            if (error && error.code === 'ER_DUP_ENTRY') {
+                if (error.message.includes('@email')) {
+return                 res.status(400).json({ error: 'Email already exists' })
+                } else if (error.message.includes('username')) {
+                    return res.status(400).json({ error: 'Username already exists' });
+}
             } else {
                 return res.status(201).json({ registered: true, result })
             }
