@@ -21,10 +21,10 @@ usersRouter.post('/register', async (req, res) => {
         pool.query(sql, [email, username, hash], (error, result) => {
             if (error && error.code === 'ER_DUP_ENTRY') {
                 if (error.message.includes('@email')) {
-return res.status(400).json({ error: 'Email already exists' })
+                    return res.status(400).json({ error: 'Email already exists' })
                 } else if (error.message.includes('username')) {
                     return res.status(400).json({ error: 'Username already exists' });
-}
+                }
             } else {
                 return res.status(201).json({ registered: true, result });
             }
@@ -56,22 +56,22 @@ usersRouter.post('/login', (req, res) => {
                     const refreshToken = jwt.sign({ userId }, process.env.REFRESH_TOKEN_SECRET as string, { expiresIn: '7d' });
 
                     res.cookie('refreshToken', refreshToken,
-                        { 
-                            httpOnly: true, 
+                        {
+                            httpOnly: true,
                             secure: process.env.NODE_ENV === 'production',
                             sameSite: process.env.NODE_ENV === 'production' ? 'none' : 'lax',
                             maxAge: 7 * 24 * 60 * 60 * 1000
                         }
                     );
                     return res.status(200).json({
-success: true,
-login: true,
-message: "Login Successful!",
-token: accessToken,
+                        success: true,
+                        login: true,
+                        message: "Login Successful!",
+                        token: accessToken,
                         email: email,
-userId,
-username,
-});
+                        userId,
+                        username,
+                    });
                 } else {
                     return res.status(401).json({ success: false, message: 'Incorrect password' });
                 }
@@ -81,36 +81,6 @@ username,
         }
 
     })
-})
-
-interface CustomJwtPayload extends JwtPayload {
-    userId: number;
-    username: string;
-}
-
-interface CustomRequest extends Request {
-    user?: CustomJwtPayload;
-}
-
-usersRouter.get('/me', authenticateToken, (req: CustomRequest, res: Response) => {
-    if (!req.user) {
-        return res.status(401).json({ message: 'Authentication required.' });
-    }
-
-    const sql = 'SELECT userId, username FROM users WHERE userId = ?';
-    const { userId } = req.user;
-
-    pool.query(sql, [userId], (error, result: any) => {
-        if (error) {
-            res.status(500).json({ error: 'Internal server error!' });
-        } 
-
-        if (result.length === 0) {
-            return res.status(404).json({ message: 'User not found' });
-        }
-
-        return res.status(200).json(result[0]);
-    });
 })
 
 usersRouter.post('/refresh-token', (req: CustomRequest, res: Response) => {
@@ -125,18 +95,32 @@ usersRouter.post('/refresh-token', (req: CustomRequest, res: Response) => {
             return res.status(403).json({ message: 'Invalid refresh token.' });
         }
 
-        const newAccessToken = jwt.sign({ userId: user.userId}, process.env.ACCESS_TOKEN_SECRET as string, { expiresIn: '15m' });
+        const newAccessToken = jwt.sign({ userId: user.userId }, process.env.ACCESS_TOKEN_SECRET as string, { expiresIn: '15m' });
 
-        res.cookie('accessToken', newAccessToken, {
-            httpOnly: true,
-            secure: process.env.REACT_APP_NODE_ENV === 'production',
-            sameSite: process.env.REACT_APP_NODE_ENV === 'production' ? 'none' : 'lax',
-            maxAge: 15 * 60 * 1000, // 15 minutes
-        });
-
-        res.json({ message: 'New access token issued'});
+        res.json({ accessToken: newAccessToken, message: 'New access token issued' });
     });
 });
+
+usersRouter.get('/me', authenticateToken, (req: CustomRequest, res: Response) => {
+    if (!req.user) {
+        return res.status(401).json({ message: 'Authentication required.' });
+    }
+
+    const sql = 'SELECT email, userId, username FROM users WHERE userId = ?';
+    const { userId } = req.user;
+
+    pool.query(sql, [userId], (error, result: any) => {
+        if (error) {
+            res.status(500).json({ error: 'Internal server error!' });
+        }
+
+        if (result.length === 0) {
+            return res.status(404).json({ message: 'User not found' });
+        }
+
+        return res.status(200).json(result[0]);
+    });
+})
 
 usersRouter.post('/logout', (req, res) => {
     res.clearCookie('accessToken', {
@@ -150,7 +134,7 @@ usersRouter.post('/logout', (req, res) => {
         secure: process.env.REACT_APP_NODE_ENV === 'production',
         sameSite: process.env.REACT_APP_NODE_ENV === 'production' ? 'none' : 'lax'
     });
-    
+
     res.status(200).json({ message: 'Logged out successfully' });
 });
 
