@@ -1,29 +1,30 @@
 import { NextFunction, Request, Response } from "express";
 import jwt from 'jsonwebtoken';
 
-interface CustomRequest extends Request {
-    user?: {
-        userId: number;
-        username: string;
-    }
+interface CustomJwtPayload {
+  userId: number;
+  username?: string;
+}
+
+export interface CustomRequest extends Request {
+  user?: CustomJwtPayload;
 }
 
 const authenticateToken = (req: CustomRequest, res: Response, next: NextFunction) => {
-    const token = req.cookies.accessToken;
+    const authHeader = req.headers.authorization;
+    const token = authHeader?.split(' ')[1];
 
     if (!token) {
         return res.status(401).json({ message: 'Authentication required. Please provide a valid token.' });
     }
 
-    jwt.verify(token, process.env.ACCESS_TOKEN_SECRET as string, (err: any, user: any) => {
+    jwt.verify(token, process.env.ACCESS_TOKEN_SECRET as string, (err, decoded) => {
         if (err) {
-            return res.status(403).json({ message: 'Invaild token.' })
+            return res.status(403).json({ message: 'Invalid token.' })
         }
 
-        if (user) {
-            req.user = user; 
-            next();
-        }
+        req.user = decoded as CustomJwtPayload; 
+        next();
     })
 }
 
