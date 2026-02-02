@@ -21,12 +21,12 @@ usersRouter.post('/register', async (req, res) => {
         pool.query(sql, [email, username, hash], (error, result) => {
             if (error && error.code === 'ER_DUP_ENTRY') {
                 if (error.message.includes('@email')) {
-return                 res.status(400).json({ error: 'Email already exists' })
+return res.status(400).json({ error: 'Email already exists' })
                 } else if (error.message.includes('username')) {
                     return res.status(400).json({ error: 'Username already exists' });
 }
             } else {
-                return res.status(201).json({ registered: true, result })
+                return res.status(201).json({ registered: true, result });
             }
         })
     } catch (error) {
@@ -35,10 +35,10 @@ return                 res.status(400).json({ error: 'Email already exists' })
 })
 
 usersRouter.post('/login', (req, res) => {
-    const sql = 'SELECT * FROM users WHERE username = ?';
-    const { username, password } = req.body;
+    const sql = 'SELECT * FROM users WHERE email = ? AND username = ?';
+    const { email, username, password } = req.body;
 
-    pool.query(sql, [username], (err: any, result: any) => {
+    pool.query(sql, [email, username], (err: any, result: any) => {
         if (err) {
             return res.status(500).json({ message: 'Internal server error!' })
         }
@@ -58,18 +58,26 @@ usersRouter.post('/login', (req, res) => {
                     res.cookie('refreshToken', refreshToken,
                         { 
                             httpOnly: true, 
-                            secure: process.env.REACT_APP_NODE_ENV === 'production',
-                            sameSite: process.env.REACT_APP_NODE_ENV === 'production' ? 'none' : 'lax',
-                            maxAge: 7 * 24 * 60 * 60 * 1000 // 7 days
+                            secure: process.env.NODE_ENV === 'production',
+                            sameSite: process.env.NODE_ENV === 'production' ? 'none' : 'lax',
+                            maxAge: 7 * 24 * 60 * 60 * 1000
                         }
                     );
-                    return res.status(200).json({ success: true, login: true, message: 'Login Successful!', token: accessToken, userId, username });
+                    return res.status(200).json({
+success: true,
+login: true,
+message: "Login Successful!",
+token: accessToken,
+                        email: email,
+userId,
+username,
+});
                 } else {
-                    return res.status(401).json({ success: false, message: 'Invalid username or password' });
+                    return res.status(401).json({ success: false, message: 'Incorrect password' });
                 }
             })
         } else {
-            return res.status(401).json({ success: false, message: 'Invalid username or password' });
+            return res.status(401).json({ success: false, message: 'Invalid Email/Username' });
         }
 
     })
