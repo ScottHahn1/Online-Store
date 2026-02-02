@@ -34,11 +34,12 @@ type Params = {
 };
 
 const useAddProduct = ({ ...params }: Params) => {
+  const { accessToken } = useUserContext();
   const queryClient = useQueryClient();
   const number = params.numOfProduct;
 
   const { mutate } = useMutation({
-    mutationFn: (variables: PostVariables) => postData(variables),
+    mutationFn: (variables: PostVariables) => postData(variables, accessToken),
     onSuccess: () => {
       params.setShowPopup(true);
       queryClient.invalidateQueries({ queryKey: ["cart"] })
