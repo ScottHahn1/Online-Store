@@ -6,8 +6,8 @@ import useCartTotal from "../hooks/useCartTotal";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faXmark } from "@fortawesome/free-solid-svg-icons";
 import CartItem from "./CartItem";
-import QuantityButtons from "./QuantityButtons";
 import { useUserContext } from "../contexts/UserContext";
+import Payment from "./Payment";
 
 export type Products = {
   count: number;
@@ -29,14 +29,21 @@ type Props = {
 const Cart = ({ setBlur, setShowCart }: Props) => {
   const [total, setTotal] = useState(0);
   const [numOfProducts, setNumOfProducts] = useState<number[]>([]);
+const [showPayment, setShowPayment] = useState(false);
 
-  const { user } = useUserContext();
+  const { user, accessToken } = useUserContext();
 
   const { data: products } = useQuery({
     queryKey: ["cart", user?.userId],
     queryFn: () =>
-      getData<Products, { userId: number }>("/api/cart", { userId: user?.userId as number }),
-    enabled: !!user?.userId
+      getData<Products, { userId: number }>(
+"/api/cart", 
+        {
+userId: user?.userId as number,
+        },
+        accessToken,
+),
+    enabled: !!user?.userId,
   });
 
   const { total: cartTotal } = useCartTotal(products, total, setTotal);
