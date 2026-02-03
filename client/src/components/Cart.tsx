@@ -53,37 +53,33 @@ userId: user?.userId as number,
   }, []);
 
   useEffect(() => {
-    products && setNumOfProducts(() => products.map((product) => product.count));
+    products &&
+setNumOfProducts(() => products.map((product) => product.count));
   }, [products]);
 
   const handleMinusClick = (index: number, price: number) => {
-    if (numOfProducts[index] > 0) {
-      const newNumOfProducts = numOfProducts.map((num, i) => {
-        if (i === index) {
-          return num - 1
-        } else {
-          return num;
-        }
-      });
+setNumOfProducts((prev) => {
+      const newNums = prev.map((num, i) =>
+        i === index ? Math.max(num - 1, 0) : num,
+      );
+      return newNums;
+    });
 
-      setNumOfProducts(newNumOfProducts);
-      setTotal(total - price);
+    if (numOfProducts[index] > 0) {
+            setTotal((prevTotal) => prevTotal - price);
     }
   };
 
   const handlePlusClick = (index: number, price: number) => {
+setNumOfProducts((prev) => {
+      const newNums = prev.map((num, i) =>
+        i === index ? Math.min(num + 1, 10) : num,
+      );
+      return newNums;
+    });
+
     if (numOfProducts[index] < 10) {
-      const newNumOfProducts = numOfProducts.map((num, i) => {
-        if (i === index) {
-          return num + 1;
-        } else {
-          return num;
-        }
-      });
-
-      setNumOfProducts(newNumOfProducts);
-
-      setTotal(cartTotal + price);
+            setTotal((prevTotal) => prevTotal + price);
     }
   };
 
