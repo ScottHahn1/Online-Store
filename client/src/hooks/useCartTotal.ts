@@ -1,20 +1,18 @@
 import { Dispatch, SetStateAction, useEffect } from 'react';
 import { Products } from '../components/Cart';
 
-const useCartTotal = (data: Products | undefined, total: number, setTotal: Dispatch<SetStateAction<number>>) => {
+const useCartTotal = (cartItems: Products | undefined, total: number, setTotal: Dispatch<SetStateAction<number>>) => {
     useEffect(() => {
-      if (data && data.length > 0) {
-        const newTotal = data.map(product => {
-          return product.price * product.count
-        }).reduce((a: number, b: number) => {
-          return a + b;
-        })
+      if (cartItems && cartItems.length > 0) {
+        const newTotal = cartItems.reduce((sum, product) => {
+          return sum + product.price * product.count;
+        }, 0)
 
         setTotal(newTotal);
       } else {
         setTotal(0);
       }
-    }, [data]);
+    }, [cartItems]);
 
     return { total };
 }
