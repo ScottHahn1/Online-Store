@@ -92,6 +92,7 @@ setNumOfProducts((prev) => {
     <div className="cart-container">
       <div className="cart-header">
         <h2>Cart</h2>
+
         <FontAwesomeIcon
           icon={faXmark}
           cursor="pointer"
@@ -103,34 +104,44 @@ setNumOfProducts((prev) => {
       <br></br>
 
       <div className="cart-items">
-        {
-          products?.map((product, index) => (
+        {          products?.map((product, index) => (
             <CartItem
+key={product.productId}
               children={ 
-                <QuantityButtons
-                  isCart={true}
-                  handleMinusClick={() => handleMinusClick(index, product.price)}
-                  handlePlusClick={() => handlePlusClick(index, product.price)}
-                  index={index}
-                  numOfProducts={numOfProducts}
-                />
+                <div className="add-remove-btn-cart">
+                <button
+                  className="minus-cart"
+                  onClick={() => handleMinusClick(index, product.price)}
+                  >
+                  -
+                </button>
+
+                {numOfProducts[index]}
+
+                <button
+                  className="plus-cart"
+                  onClick={() => handlePlusClick(index, product.price)}
+                  >
+                  +
+                </button>
+              </div>
               }
               product={product}
             />
-          ))
-        }
+          ))        }
       </div>
 
       <div className="total">
         <h3 style={{ paddingLeft: "1rem" }}>Total</h3>
 
         <b style={{ paddingLeft: "1rem" }}>
-            {products ? new Intl.NumberFormat("en-ZA", {
+            {products
+? new Intl.NumberFormat("en-US", {
                 style: "currency",
                 currency: "ZAR",
                 minimumFractionDigits: 2,
                 }).format(cartTotal)
-            : "R0, 00"}
+            : "R0. 00"}
         </b>
       </div>
       <button className="checkout-btn">Checkout</button>
