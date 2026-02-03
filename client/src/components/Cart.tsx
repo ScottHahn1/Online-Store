@@ -29,7 +29,7 @@ type Props = {
 const Cart = ({ setBlur, setShowCart }: Props) => {
   const [total, setTotal] = useState(0);
   const [numOfProducts, setNumOfProducts] = useState<number[]>([]);
-const [showPayment, setShowPayment] = useState(false);
+  const [showPayment, setShowPayment] = useState(false);
 
   const { user, accessToken } = useUserContext();
 
@@ -37,12 +37,12 @@ const [showPayment, setShowPayment] = useState(false);
     queryKey: ["cart", user?.userId],
     queryFn: () =>
       getData<Products, { userId: number }>(
-"/api/cart", 
+        "/api/cart", 
         {
-userId: user?.userId as number,
+          userId: user?.userId as number,
         },
         accessToken,
-),
+      ),
     enabled: !!user?.userId,
   });
 
@@ -54,11 +54,11 @@ userId: user?.userId as number,
 
   useEffect(() => {
     products &&
-setNumOfProducts(() => products.map((product) => product.count));
+    setNumOfProducts(() => products.map((product) => product.count));
   }, [products]);
 
   const handleMinusClick = (index: number, price: number) => {
-setNumOfProducts((prev) => {
+    setNumOfProducts((prev) => {
       const newNums = prev.map((num, i) =>
         i === index ? Math.max(num - 1, 0) : num,
       );
@@ -66,12 +66,12 @@ setNumOfProducts((prev) => {
     });
 
     if (numOfProducts[index] > 0) {
-            setTotal((prevTotal) => prevTotal - price);
+      setTotal((prevTotal) => prevTotal - price);
     }
   };
 
   const handlePlusClick = (index: number, price: number) => {
-setNumOfProducts((prev) => {
+    setNumOfProducts((prev) => {
       const newNums = prev.map((num, i) =>
         i === index ? Math.min(num + 1, 10) : num,
       );
@@ -79,7 +79,7 @@ setNumOfProducts((prev) => {
     });
 
     if (numOfProducts[index] < 10) {
-            setTotal((prevTotal) => prevTotal + price);
+      setTotal((prevTotal) => prevTotal + price);
     }
   };
 
@@ -104,15 +104,15 @@ setNumOfProducts((prev) => {
       <br></br>
 
       <div className="cart-items">
-        {          products?.map((product, index) => (
-            <CartItem
-key={product.productId}
-              children={ 
-                <div className="add-remove-btn-cart">
+        {products?.map((product, index) => (
+          <CartItem
+            key={product.productId}
+            children={
+              <div className="add-remove-btn-cart">
                 <button
                   className="minus-cart"
                   onClick={() => handleMinusClick(index, product.price)}
-                  >
+                >
                   -
                 </button>
 
@@ -121,30 +121,37 @@ key={product.productId}
                 <button
                   className="plus-cart"
                   onClick={() => handlePlusClick(index, product.price)}
-                  >
+                >
                   +
                 </button>
               </div>
-              }
-              product={product}
-            />
-          ))        }
+            }
+            product={product}
+          />
+        ))}
       </div>
 
       <div className="total">
         <h3 style={{ paddingLeft: "1rem" }}>Total</h3>
 
         <b style={{ paddingLeft: "1rem" }}>
-            {products
-? new Intl.NumberFormat("en-US", {
+          {products
+            ? new Intl.NumberFormat("en-US", {
                 style: "currency",
                 currency: "ZAR",
                 minimumFractionDigits: 2,
-                }).format(cartTotal)
+              }).format(cartTotal)
             : "R0. 00"}
         </b>
       </div>
-      <button className="checkout-btn">Checkout</button>
+
+      <button className="checkout-btn" onClick={() => setShowPayment(true)}>
+        Checkout
+      </button>
+
+      {showPayment && user?.email && (
+        <Payment email={user.email} amount={total} />
+      )}
     </div>
   );
 };
