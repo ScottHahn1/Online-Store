@@ -12,12 +12,14 @@ dotenv.config();
 
 const app = express();
 const port = process.env.PORT || 8888;
-const FRONTEND_URL = process.env.FRONTEND_URL || "http://localhost:3000";
+const frontendUrl = process.env.NODE_ENV === "production" 
+? "https://online-store-frontend-mocha.vercel.app" 
+: "http://localhost:3000";
 
 app.use(express.json());
 app.use(cookieParser());
 app.use(cors({
-    origin: ['https://online-store-frontend-mocha.vercel.app', FRONTEND_URL],
+    origin: [frontendUrl],
     methods: ['GET', 'POST', 'DELETE', 'PATCH', 'PUT'],
     credentials: true
 }));
