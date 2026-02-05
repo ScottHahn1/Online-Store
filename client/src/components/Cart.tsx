@@ -50,7 +50,7 @@ const Cart = ({ setBlur, setShowCart }: Props) => {
 
   useEffect(() => {
     setBlur(true);
-  }, []);
+  }, [setBlur]);
 
   useEffect(() => {
     products &&

@@ -45,7 +45,7 @@ const Payment = ({ email, amount }: Props) => {
         amount: amount * 100,
       },
     });
-  }, [email, amount]);
+  }, [email, amount, mutate]);
 
   useEffect(() => {
     if (!paymentData.accessCode) return;

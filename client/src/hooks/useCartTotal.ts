@@ -12,7 +12,7 @@ const useCartTotal = (cartItems: Products | undefined, total: number, setTotal: 
       } else {
         setTotal(0);
       }
-    }, [cartItems]);
+    }, [cartItems, setTotal]);
 
     return { total };
 }

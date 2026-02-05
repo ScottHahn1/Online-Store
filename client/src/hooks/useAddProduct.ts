@@ -68,7 +68,7 @@ const useAddProduct = ({ ...params }: Params) => {
       });
       params.setAddToCart(false);
     }
-  }, [params.addToCart]);
+  }, [params.addToCart, mutate, number, params, user]);
 };
 
 export default useAddProduct;
