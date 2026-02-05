@@ -1,3 +1,4 @@
+import { AxiosError } from "axios";
 import axiosInstance from "./AxiosInstance";
 
 const getData = async <T, U>(url: string, params?: U, accessToken?: string | null) => {
@@ -15,7 +16,8 @@ const getData = async <T, U>(url: string, params?: U, accessToken?: string | nul
         const data: T = await response.data;
         return data;
     } catch(err) {
-        console.log(err);
+        const error = err as AxiosError<Record<string, any>>;
+        throw error.response?.data || error;
     }
 }
 
@@ -29,27 +31,27 @@ type MutateParams = {
 const postData = async ({ url, body }: MutateParams, accessToken?: string | null) => {
     const headers: Record<string, string> = {};
 
-    if (accessToken)         {
-            headers["                Authorization"] = `Bearer ${accessToken}`;
+    if (accessToken) {
+      headers["Authorization"] = `Bearer ${accessToken}`;
     }
 
     try {
         const postRequest = await axiosInstance.post(url, body, { headers });
         
         return postRequest.data;
-    }).catch(err => {
-        return err.response.data;
-    })
-
-    return postRequest;
+    } catch (err) {
+        const error = err as AxiosError<Record<string, any>>;
+        throw error.response?.data || error;
+    }
 }
 
 const deleteData = async (url: string) => {
     const deleteRequest = await axiosInstance.delete(url)
     .then(res => {
         return res.data;
-    }).catch(error => {
-        console.log(error);
+    }).catch(err => {
+        const error = err as AxiosError<Record<string, any>>;
+        throw error.response?.data || error;
     })
 
     return deleteRequest;
