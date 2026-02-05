@@ -19,7 +19,7 @@ const frontendUrl = process.env.NODE_ENV === "production"
 app.use(express.json());
 app.use(cookieParser());
 app.use(cors({
-    origin: "frontendUrl",
+    origin: frontendUrl,
     methods: ['GET', 'POST', 'DELETE', 'PATCH', 'PUT'],
     credentials: true
 }));
