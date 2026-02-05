@@ -27,16 +27,16 @@ type MutateParams = {
 }
 
 const postData = async ({ url, body }: MutateParams, accessToken?: string | null) => {
-    const postRequest = await axiosInstance.post(
-        url, 
-        body,
-        {
-            headers: {
-                Authorization: `Bearer ${accessToken}`
-            }
-        }
-    ).then(res => {
-        return res.data;
+    const headers: Record<string, string> = {};
+
+    if (accessToken)         {
+            headers["                Authorization"] = `Bearer ${accessToken}`;
+    }
+
+    try {
+        const postRequest = await axiosInstance.post(url, body, { headers });
+        
+        return postRequest.data;
     }).catch(err => {
         return err.response.data;
     })
