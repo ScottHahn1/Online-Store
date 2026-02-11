@@ -10,13 +10,14 @@ const useAuth = () => {
     queryKey: ['auth'],
     queryFn: async () => {
       try {
-        const refreshTokenRes = await axiosInstance.post('/api/users/refresh-token');
+        const refreshTokenRes = await axiosInstance.post('/api/users/refresh-token', {}, { withCredentials: true });
         const newAccessToken = refreshTokenRes.data.accessToken;
 
         setAccessToken(newAccessToken);
 
         const userRes = await axiosInstance.get('/api/users/me', {
-          headers: { Authorization: `Bearer ${newAccessToken}` }
+          headers: { Authorization: `Bearer ${newAccessToken}` },
+          withCredentials: true
         });
         
         return userRes.data;
