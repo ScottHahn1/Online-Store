@@ -33,15 +33,12 @@ const Login = ({ loggedIn, setLoggedIn }: LoginProps) => {
   const { mutate } = useMutation({
     mutationFn: (variables: PostVariables) => postData(variables),
     onSuccess: (data) => {
-      if (data.success) {      
         setUser({ email: data.email, userId: data.userId, username: data.username });
         setAccessToken(data.token);
         setLoggedIn(true);
         setTimeout(() => navigate('/'), 2000);
-      } else {                  
-        setError(data.message);
-      }
-    }
+    },
+    onError: (err) => setError(err.message)
   });
 
   const login = (e: React.FormEvent<HTMLFormElement>): void => {
