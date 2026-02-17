@@ -3,6 +3,7 @@ import pool from "../database";
 import bcrypt from 'bcrypt';
 import jwt from "jsonwebtoken";
 import authenticateToken, { CustomRequest } from "../middlewares/authToken";
+import { RowDataPacket } from "mysql2";
 
 const usersRouter = Router();
 const salt = 10;
@@ -18,19 +19,17 @@ usersRouter.post('/register', async (req, res) => {
     try {
         const hash = await bcrypt.hash(password, salt);
 
-        pool.query(sql, [email, username, hash], (error, result) => {
-            if (error && error.code === 'ER_DUP_ENTRY') {
-                if (error.message.includes('@email')) {
-                    return res.status(400).json({ error: 'Email already exists' })
-                } else if (error.message.includes('username')) {
-                    return res.status(400).json({ error: 'Username already exists' });
-                }
-            } else {
+const [result] = await         pool.promise().query<RowDataPacket[]>(sql, [email, username, hash]);
                 return res.status(201).json({ registered: true, result });
+            } catch (error: any) {
+        if (error.code === "ER_DUP_ENTRY") {
+            if (error.sqlMessage.endsWith("'users.email'")) {
+                return res.status(400).json({ message: "Email already exists" });
+            } else if (error.sqlMessage.endsWith("'users.username'")) {
+                return res.status(400).json({ message: "Username already exists" });
             }
-        })
-    } catch (error) {
-        return res.status(500).json({ error: 'Internal server error!' });
+        }
+        return res.status(500).json({ error: "Internal server error!" });
     }
 })
 
