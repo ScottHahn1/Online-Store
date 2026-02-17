@@ -19,9 +19,9 @@ usersRouter.post('/register', async (req, res) => {
     try {
         const hash = await bcrypt.hash(password, salt);
 
-const [result] = await         pool.promise().query<RowDataPacket[]>(sql, [email, username, hash]);
-                return res.status(201).json({ registered: true, result });
-            } catch (error: any) {
+        const [result] = await pool.promise().query<RowDataPacket[]>(sql, [email, username, hash]);
+        return res.status(201).json({ registered: true, result });
+    } catch (error: any) {
         if (error.code === "ER_DUP_ENTRY") {
             if (error.sqlMessage.endsWith("'users.email'")) {
                 return res.status(400).json({ message: "Email already exists" });
@@ -100,25 +100,25 @@ usersRouter.post('/refresh-token', (req: CustomRequest, res: Response) => {
     });
 });
 
-usersRouter.get('/me', authenticateToken, (req: CustomRequest, res: Response) => {
+usersRouter.get('/me', authenticateToken, async (req: CustomRequest, res: Response) => {
     if (!req.user) {
-        return res.status(401).json({ message: 'Authentication required.' });
+        return res.status(401).json({ message: "Authentication required." });
     }
 
-    const sql = 'SELECT email, userId, username FROM users WHERE userId = ?';
+    const sql = "SELECT email, userId, username FROM users WHERE userId = ?";
     const { userId } = req.user;
 
-    pool.query(sql, [userId], (error, result: any) => {
-        if (error) {
-            res.status(500).json({ error: 'Internal server error!' });
+    try {
+        const [rows] = await pool.promise().query<RowDataPacket[]>(sql, [userId]);
+
+        if (rows.length === 0) {
+            return res.status(404).json({ message: "User not found" });
         }
 
-        if (result.length === 0) {
-            return res.status(404).json({ message: 'User not found' });
-        }
-
-        return res.status(200).json(result[0]);
-    });
+        return res.status(200).json(rows[0]);
+    } catch {
+        res.status(500).json({ error: "Internal server error!" });
+    }
 })
 
 usersRouter.post('/logout', (req, res) => {
