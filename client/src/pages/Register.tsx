@@ -26,15 +26,13 @@ const Register = () => {
   const { mutate } = useMutation({
     mutationFn: (variables: PostVariables) => postData(variables),
 
-    onSuccess: (data) => {
-      if (data.error) {
-        setRegisterSuccessful(false);
-        setError(data.error);
-      } else {
+    onSuccess: () => {
         setRegisterSuccessful(true);
         setTimeout(() => navigate("/login"), 2000);
-      }
     },
+    onError: (err: any) => {
+        setError(err.response.data.message);
+    }
   });
 
   const signUp = (e: React.FormEvent<HTMLFormElement>): void => {
