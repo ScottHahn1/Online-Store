@@ -32,17 +32,11 @@ const postData = async ({ url, body }: MutateParams, accessToken?: string | null
     const headers: Record<string, string> = {};
 
     if (accessToken) {
-      headers["Authorization"] = `Bearer ${accessToken}`;
+        headers["Authorization"] = `Bearer ${accessToken}`;
     }
 
-    try {
-        const postRequest = await axiosInstance.post(url, body, { headers });
-        
-        return postRequest.data;
-    } catch (err) {
-        const error = err as AxiosError<Record<string, any>>;
-        throw error.response?.data || error;
-    }
+    const postRequest = await axiosInstance.post(url, body, { headers });
+    return postRequest.data;
 }
 
 const deleteData = async (url: string) => {
