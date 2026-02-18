@@ -40,39 +40,36 @@ usersRouter.post('/login', async (req, res) => {
         const [result] = await pool.promise().query<RowDataPacket[]>(sql, [email, username]);
 
         if (result.length > 0) {
-            bcrypt.compare(password, result[0].password, (err, response) => {
-                if (err) {
-                    return res.status(500).json({ message: "Error logging in" });
-                }
+            const match = await bcrypt.compare(password, result[0].password);
 
-                if (response) {
-                    const userId = result[0].userId;
+            if (match) {
+                const userId = result[0].userId;
 
-                    const accessToken = jwt.sign({ userId }, process.env.ACCESS_TOKEN_SECRET as string, { expiresIn: "15m" });
-                    const refreshToken = jwt.sign({ userId }, process.env.REFRESH_TOKEN_SECRET as string, { expiresIn: "7d" });
+                const accessToken = jwt.sign({ userId }, process.env.ACCESS_TOKEN_SECRET as string, { expiresIn: "15m" });
+                const refreshToken = jwt.sign({ userId }, process.env.REFRESH_TOKEN_SECRET as string, { expiresIn: "7d" });
 
-                    res.cookie("refreshToken", refreshToken,
-                        {
-                            httpOnly: true,
-                            secure: process.env.NODE_ENV === "production",
-                            sameSite: process.env.NODE_ENV === "production" ? "none" : "lax",
-                            maxAge: 7 * 24 * 60 * 60 * 1000
-                        }
-                    );
-                    return res.status(200).json({
-                        success: true,
-                        login: true,
-                        message: "Login Successful!",
-                        token: accessToken,
-                        email: email,
-                        userId,
-                        username,
-                    });
-                } else {
-                    return res.status(401).json({ success: false, message: "Incorrect password" });
-                }
-            })
-        } else {
+                res.cookie("refreshToken", refreshToken,
+                    {
+                        httpOnly: true,
+                        secure: process.env.NODE_ENV === "production",
+                        sameSite: process.env.NODE_ENV === "production" ? "none" : "lax",
+                        maxAge: 7 * 24 * 60 * 60 * 1000
+                    }
+                );
+
+                return res.status(200).json({
+                    success: true,
+                    login: true,
+                    message: "Login Successful!",
+                    token: accessToken,
+                    email,
+                    userId,
+                    username,
+                });
+            } else {
+                return res.status(401).json({ success: false, message: "Incorrect password" });
+            }
+        }   else {
             return res.status(401).json({ success: false, message: "Invalid Email/Username" });
         }
     } catch {
