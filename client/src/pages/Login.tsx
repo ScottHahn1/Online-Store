@@ -38,7 +38,9 @@ const Login = ({ loggedIn, setLoggedIn }: LoginProps) => {
         setLoggedIn(true);
         setTimeout(() => navigate('/'), 2000);
     },
-    onError: (err) => setError(err.message)
+    onError: (err: any) => {
+        setError(err.response.data.message);
+    }
   });
 
   const login = (e: React.FormEvent<HTMLFormElement>): void => {
