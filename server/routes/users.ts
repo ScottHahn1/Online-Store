@@ -18,7 +18,6 @@ usersRouter.post('/register', async (req, res) => {
 
     try {
         const hash = await bcrypt.hash(password, salt);
-
         const [result] = await pool.promise().query<RowDataPacket[]>(sql, [email, username, hash]);
         return res.status(201).json({ registered: true, result });
     } catch (error: any) {
@@ -29,36 +28,34 @@ usersRouter.post('/register', async (req, res) => {
                 return res.status(400).json({ message: "Username already exists" });
             }
         }
-        return res.status(500).json({ error: "Internal server error!" });
+        return res.status(500).json({ error: "Internal server error" });
     }
 })
 
-usersRouter.post('/login', (req, res) => {
-    const sql = 'SELECT * FROM users WHERE email = ? AND username = ?';
+usersRouter.post('/login', async (req, res) => {
+    const sql = "SELECT * FROM users WHERE email = ? AND username = ?";
     const { email, username, password } = req.body;
 
-    pool.query(sql, [email, username], (err: any, result: any) => {
-        if (err) {
-            return res.status(500).json({ message: 'Internal server error!' })
-        }
+    try {
+        const [result] = await pool.promise().query<RowDataPacket[]>(sql, [email, username]);
 
         if (result.length > 0) {
-            bcrypt.compare(password, result[0].password, (err: any, response: any) => {
+            bcrypt.compare(password, result[0].password, (err, response) => {
                 if (err) {
-                    return res.status(500).json('Error logging in');
+                    return res.status(500).json({ message: "Error logging in" });
                 }
 
                 if (response) {
                     const userId = result[0].userId;
 
-                    const accessToken = jwt.sign({ userId }, process.env.ACCESS_TOKEN_SECRET as string, { expiresIn: '15m' });
-                    const refreshToken = jwt.sign({ userId }, process.env.REFRESH_TOKEN_SECRET as string, { expiresIn: '7d' });
+                    const accessToken = jwt.sign({ userId }, process.env.ACCESS_TOKEN_SECRET as string, { expiresIn: "15m" });
+                    const refreshToken = jwt.sign({ userId }, process.env.REFRESH_TOKEN_SECRET as string, { expiresIn: "7d" });
 
-                    res.cookie('refreshToken', refreshToken,
+                    res.cookie("refreshToken", refreshToken,
                         {
                             httpOnly: true,
-                            secure: process.env.NODE_ENV === 'production',
-                            sameSite: process.env.NODE_ENV === 'production' ? 'none' : 'lax',
+                            secure: process.env.NODE_ENV === "production",
+                            sameSite: process.env.NODE_ENV === "production" ? "none" : "lax",
                             maxAge: 7 * 24 * 60 * 60 * 1000
                         }
                     );
@@ -72,14 +69,15 @@ usersRouter.post('/login', (req, res) => {
                         username,
                     });
                 } else {
-                    return res.status(401).json({ success: false, message: 'Incorrect password' });
+                    return res.status(401).json({ success: false, message: "Incorrect password" });
                 }
             })
         } else {
-            return res.status(401).json({ success: false, message: 'Invalid Email/Username' });
+            return res.status(401).json({ success: false, message: "Invalid Email/Username" });
         }
-
-    })
+    } catch {
+        return res.status(500).json({ message: "Internal server error" });
+    }
 })
 
 usersRouter.post('/refresh-token', (req: CustomRequest, res: Response) => {
