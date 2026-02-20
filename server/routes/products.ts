@@ -1,10 +1,10 @@
 import { Router } from "express";
 import pool from "../database";
+import { RowDataPacket } from "mysql2";
 
 const productsRouter = Router();
 
-//all products
-productsRouter.get("/", (req, res) => {
+productsRouter.get("/", async (req, res) => {
   const { category, sortBy } = req.query;
   const page = parseInt(req.query.page as string);
   const limit = 50;
@@ -26,28 +26,16 @@ productsRouter.get("/", (req, res) => {
     }
   }
 
-  pool.getConnection((err: any, connection: any) => {
-    if (err) {
-      console.log(err);
-      return;
-    }
-
+  try {
     const sqlQueryParams = category ? [category, limit, offset] : [limit, offset];
-
-    connection.query(sql, sqlQueryParams, (err: any, rows: any) => {
-      if (err) {
-        console.log(err);
-        return;
-      }
-
-      res.send(rows);
-      connection.release();
-    });
-  });
+    const [rows] = await pool.promise().query(sql, sqlQueryParams);
+    res.status(200).json(rows);
+  } catch {
+    res.status(500).json({ message: "Internal server error" });
+  }
 });
 
-//total amount of products
-productsRouter.get("/total", (req, res) => {
+productsRouter.get("/total", async (req, res) => {
   const { category } = req.query;
 
   let sql: string;
@@ -58,26 +46,14 @@ productsRouter.get("/total", (req, res) => {
     sql = "SELECT COUNT(*) AS count FROM products";
   }
 
-  pool.getConnection((err: any, connection: any) => {
-    if (err) {
-      console.log(err);
-      return;
-    }
-
-    connection.query(sql, [], (err: any, rows: any) => {
-      if (err) {
-        console.log(err);
-        return;
-      }
-
-      res.send(rows[0]);
-
-      connection.release();
-    });
-  });
+  try {
+    const [rows] = await pool.promise().query<RowDataPacket[]>(sql, []);
+    res.status(200).json(rows[0]);
+  } catch {
+    res.status(500).json({ message: "Internal server error" });
+  }
 });
 
-//similar products
 productsRouter.get("/similar", (req, res) => {
   const { productId, category } = req.query;
   const sql = `SELECT DISTINCT productId, title, image, price FROM products WHERE category->"$.name" = "${category}" AND NOT productId = ${productId}`;
@@ -101,7 +77,6 @@ productsRouter.get("/similar", (req, res) => {
   });
 });
 
-//single product
 productsRouter.get("/:id", (req, res) => {
   const { id } = req.params;
   const sql = `SELECT * FROM products WHERE productId = ${id}`;
