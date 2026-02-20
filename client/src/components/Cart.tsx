@@ -36,14 +36,12 @@ const Cart = ({ setBlur, setShowCart }: Props) => {
   const { data: products } = useQuery({
     queryKey: ["cart", user?.userId],
     queryFn: () =>
-      getData<Products, { userId: number }>(
+      getData<Products, {}>(
         "/api/cart", 
-        {
-          userId: user?.userId as number,
-        },
+        {},
         accessToken,
       ),
-    enabled: !!user?.userId,
+    enabled: !!user
   });
 
   const { total: cartTotal } = useCartTotal(products, total, setTotal);
