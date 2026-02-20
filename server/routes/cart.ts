@@ -1,30 +1,20 @@
 import { Router } from "express";
 import pool from "../database";
-import authenticateToken from "../middlewares/authToken";
+import authenticateToken, { CustomRequest } from "../middlewares/authToken";
+import { RowDataPacket } from "mysql2";
 
 const cartRouter = Router();
 
-cartRouter.get('/', authenticateToken, (req, res) => {
-  const userId: number = parseInt(req.query.userId as string);
+cartRouter.get('/', authenticateToken, async (req: CustomRequest, res) => {
+  const userId = req.user?.userId;
   const sql = 'SELECT productId, title, price, image, COUNT(*) AS count FROM cart WHERE userId = ? GROUP BY productId, title, price, image';
 
-  pool.getConnection((err: any, connection: any) => {
-    if (err) {
-      console.log(err);
-      return;
-    }
-
-    connection.query(sql, [userId], (err: any, rows: any) => {
-      if (err) {
-        console.log(err);
-        return;
-      }
-   
-      res.send(rows);
-
-      connection.release();
-    });
-  });
+  try {
+        const [rows] = await pool.promise().query<RowDataPacket[]>(sql, [userId]);
+        return res.status(200).json(rows);
+    } catch {
+        res.status(500).json({ message: "Failed to fetch cart items"     });
+  }
 });
 
 cartRouter.post('/add', authenticateToken, (req, res) => {
