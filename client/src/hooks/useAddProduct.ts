@@ -6,7 +6,6 @@ import { useUserContext } from "../contexts/UserContext";
 type PostVariables = {
   url: string;
   body: {
-    userId: number;
     productId: number;
     title: string;
     brand: string;
@@ -54,7 +53,6 @@ const useAddProduct = ({ ...params }: Params) => {
         return mutate({
           url: '/api/cart/add',
           body: {
-            userId: user.userId as number,
             productId: params.productId,
             title: params.title,
             brand: params.brand,
