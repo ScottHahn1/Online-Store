@@ -1,4 +1,4 @@
-import { useMutation } from "@tanstack/react-query";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { postData } from "../utils/Api";
 import { useEffect, useState } from "react";
 import { useUserContext } from "../contexts/UserContext";
@@ -8,6 +8,7 @@ import useVerifyPayment from "../hooks/useVerifyPayment";
 interface PostVariables {
   url: string;
   body: {
+userId: number;
     email: string;
     amount: number;
   };
@@ -19,7 +20,7 @@ interface Props {
 }
 
 const Payment = ({ email, amount }: Props) => {
-  const { accessToken } = useUserContext();
+  const { accessToken, user } = useUserContext();
   const [paymentData, setPaymentData] = useState<{
     accessCode: string | null;
     reference: string | null;
@@ -41,6 +42,7 @@ const Payment = ({ email, amount }: Props) => {
     mutate({
       url: "/api/payments/initialize",
       body: {
+userId: user?.userId as number,
         email,
         amount: amount * 100,
       },
