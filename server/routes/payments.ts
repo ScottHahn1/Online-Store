@@ -49,7 +49,7 @@ interface PaymentRow extends RowDataPacket {
 
 paymentsRouter.get("/verify/:reference", async (req, res) => {
     const { reference } = req.params;
-    
+
     try {
         const [rows] = await pool.promise().query<PaymentRow[]>(
             "SELECT status FROM payments WHERE reference = ?", 
@@ -64,7 +64,7 @@ paymentsRouter.get("/verify/:reference", async (req, res) => {
     }
 })
 
-paymentsRouter.post("/webhook", (req, res) => {
+paymentsRouter.post("/webhook", async (req, res) => {
     try {
         const hash = crypto.createHmac(
             'sha512', process.env.PAYSTACK_KEY as string
@@ -74,12 +74,32 @@ paymentsRouter.post("/webhook", (req, res) => {
 
         if (hash == req.headers['x-paystack-signature']) {
             const event = req.body;
-            console.log('Paystack webhook received:', event);
 
             if (event.event === 'charge.success') {
                 const reference = event.data.reference;
-                // TODO: mark transaction as paid in your database
-                console.log(`Payment successful for reference: ${reference}`);
+
+                interface PaymentRow extends RowDataPacket {
+                    userId: number;
+                }
+
+                const [rows] = await pool.promise().query<PaymentRow[]>(
+                    "SELECT user_id FROM payments WHERE reference = ?", 
+                    [reference]
+                );
+
+                if (Array.isArray(rows) && rows.length) {
+                    const userId = rows[0].user_id;
+                    
+                    await pool.promise().query(
+                        "UPDATE payments SET status = 'success' WHERE reference = ?",
+                        [reference]
+                    )
+
+                    await pool.promise().query(
+                        "DELETE FROM cart WHERE userId = ?",
+                        [userId]
+                    );
+                }
             }
         }
 
