@@ -8,7 +8,7 @@ import useVerifyPayment from "../hooks/useVerifyPayment";
 interface PostVariables {
   url: string;
   body: {
-userId: number;
+    userId: number;
     email: string;
     amount: number;
   };
@@ -29,10 +29,10 @@ const Payment = ({ email, amount }: Props) => {
   const { mutate } = useMutation({
     mutationFn: (variables: PostVariables) => postData(variables, accessToken),
     onSuccess: (res) => {
-      setPaymentData({
-        accessCode: res.data.access_code,
-        reference: res.data.reference,
-      });
+        setPaymentData({
+            accessCode: res.data.access_code,
+            reference: res.data.reference,
+        });
     },
   });
 
@@ -42,7 +42,7 @@ const Payment = ({ email, amount }: Props) => {
     mutate({
       url: "/api/payments/initialize",
       body: {
-userId: user?.userId as number,
+        userId: user?.userId as number,
         email,
         amount: amount * 100,
       },
@@ -56,17 +56,27 @@ userId: user?.userId as number,
     popup.resumeTransaction(paymentData.accessCode);
   }, [paymentData.accessCode]);
 
-  const { data, isLoading } = useVerifyPayment(paymentData.reference);
+    const { data, isLoading } = useVerifyPayment(paymentData.reference);
+
+    const queryClient = useQueryClient();
+
+    useEffect(() => {
+        if (data?.status === "success") {
+            queryClient.invalidateQueries({
+            queryKey: ["cart", user?.userId]
+            });
+        }
+    }, [data?.status]);
 
   return (
     <div>
       {isLoading && <p>Verifying payment…</p>}
 
-      {data?.data?.status === "failed" && (
+      {data?.status === "failed" && (
         <p>Payment failed. Please try again.</p>
       )}
 
-      {data?.data?.status === "success" && (
+      {data?.status === "success" && (
         <div style={{ textAlign: "center" }}>
           <h3>✅ Payment successful</h3>
           <p>Your transaction has been confirmed.</p>
