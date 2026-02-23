@@ -49,18 +49,16 @@ interface PaymentRow extends RowDataPacket {
 
 paymentsRouter.get("/verify/:reference", async (req, res) => {
     const { reference } = req.params;
-    console.log(reference);
+    
     try {
-        const response = await axios.get(
-            `https://api.paystack.co/transaction/verify/${reference}`,
-            {
-                headers: {
-                    Authorization: `Bearer ${process.env.PAYSTACK_KEY}`,
-                    "Content-Type": "application/json"
-                }
-            }
-        )
-        res.status(200).json(response.data);
+        const [rows] = await pool.promise().query<PaymentRow[]>(
+            "SELECT status FROM payments WHERE reference = ?", 
+            [reference]
+        );
+
+        if (!rows.length) return res.json({ status: "pending" });
+
+        res.status(200).json({ status: rows[0].status });
     } catch (error) {
         res.status(500).json({ message: "Payment verification failed" });
     }
