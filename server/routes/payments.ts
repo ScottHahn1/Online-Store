@@ -1,12 +1,14 @@
 import { Router } from "express";
 import axios from "axios";
 import crypto from "crypto";
+import pool from "../database";
+import { RowDataPacket } from "mysql2";
 
 const paymentsRouter = Router();
 
 paymentsRouter.post("/initialize", async (req, res) => {
     try {
-        const { email, amount } = req.body;
+        const { userId, email, amount } = req.body;
 
         if (!email || !amount) {
             return res.status(400).json({ message: "Email and amount are required" });
@@ -25,6 +27,16 @@ paymentsRouter.post("/initialize", async (req, res) => {
                 }
             }
         )
+
+        const accessCode = response.data.data.access_code;
+        const reference = response.data.data.reference;
+
+        pool.query(
+            `INSERT INTO payments (user_id, reference, access_code, amount, currency, status)
+            VALUES (?, ?, ?, ?, ?, 'pending')`,
+            [userId, reference, accessCode, amount, 'ZAR']
+        )
+
         res.status(200).json(response.data);
     } catch (error) {
         res.status(500).json({ message: "Payment initialization failed" });
