@@ -43,6 +43,10 @@ paymentsRouter.post("/initialize", async (req, res) => {
     }
 })
 
+interface PaymentRow extends RowDataPacket {
+    status: string;
+}
+
 paymentsRouter.get("/verify/:reference", async (req, res) => {
     const { reference } = req.params;
     console.log(reference);
