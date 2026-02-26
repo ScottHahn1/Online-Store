@@ -1,4 +1,4 @@
-import { Router } from "express";
+import { Request, Response, Router } from "express";
 import axios from "axios";
 import crypto from "crypto";
 import pool from "../database";
@@ -64,18 +64,18 @@ paymentsRouter.get("/verify/:reference", async (req, res) => {
     }
 })
 
-paymentsRouter.post("/webhook", async (req, res) => {
+export const webhookHandler = async (req: Request, res: Response) => {
     try {
         const hash = crypto.createHmac(
             'sha512', process.env.PAYSTACK_KEY as string
         )
-        .update(JSON.stringify(req.body))
+        .update(req.body)
         .digest('hex');
 
-        if (hash == req.headers['x-paystack-signature']) {
-            const event = req.body;
-
-            if (event.event === 'charge.success') {
+        if (hash == req.headers["x-paystack-signature"]) {
+            const event = JSON.parse(req.body.toString("utf8"));
+       
+            if (event.event === "charge.success") {
                 const reference = event.data.reference;
 
                 interface PaymentRow extends RowDataPacket {
@@ -89,7 +89,7 @@ paymentsRouter.post("/webhook", async (req, res) => {
 
                 if (Array.isArray(rows) && rows.length) {
                     const userId = rows[0].user_id;
-                    
+
                     await pool.promise().query(
                         "UPDATE payments SET status = 'success' WHERE reference = ?",
                         [reference]
@@ -103,11 +103,10 @@ paymentsRouter.post("/webhook", async (req, res) => {
             }
         }
 
-        res.status(200).send('OK');
+        res.status(200).send("OK");
     } catch (error) {
-        console.error(error);
-        res.status(500).send('Error');
+        res.status(500).send("Error");
     }
-})
+}
 
 export default paymentsRouter;
