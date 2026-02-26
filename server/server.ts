@@ -6,7 +6,7 @@ import usersRouter from "./routes/users";
 import cartRouter from "./routes/cart";
 import categoriesRouter from "./routes/categories";
 import cookieParser from 'cookie-parser';
-import paymentsRouter from "./routes/payments";
+import paymentsRouter, { webhookHandler } from "./routes/payments";
 
 dotenv.config();
 
@@ -16,6 +16,11 @@ const frontendUrl = process.env.NODE_ENV === "production"
 ? "https://online-store-frontend-mocha.vercel.app" 
 : "http://localhost:3000";
 
+app.post(
+    "/api/payments/webhook",
+    express.raw({ type: "application/json" }),
+    webhookHandler
+);
 app.use(express.json());
 app.use(cookieParser());
 app.use(cors({
