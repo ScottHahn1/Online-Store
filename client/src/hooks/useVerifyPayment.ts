@@ -7,14 +7,11 @@ interface VerifyPayment {
 }
 
 const useVerifyPayment = (reference: string | null) => {
-    const { user } = useUserContext();
-
     return useQuery({
         queryKey: ["verifyPayment", reference],
         queryFn: () => 
-            getData<VerifyPayment, { userId: number }>(
+            getData<VerifyPayment, { }>(
                 `/api/payments/verify/${reference}`, 
-                { userId: user?.userId as number }
             ),
         enabled: !!reference,
         retry: false,
