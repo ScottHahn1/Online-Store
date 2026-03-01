@@ -1,6 +1,5 @@
 import { useQuery } from "@tanstack/react-query";
 import { getData } from "../utils/Api";
-import { useUserContext } from "../contexts/UserContext";
 
 interface VerifyPayment {
     status: string;
