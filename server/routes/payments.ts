@@ -79,7 +79,7 @@ export const webhookHandler = async (req: Request, res: Response) => {
                 const reference = event.data.reference;
 
                 interface PaymentRow extends RowDataPacket {
-                    userId: number;
+                    user_id: number;
                 }
 
                 const [rows] = await pool.promise().query<PaymentRow[]>(
