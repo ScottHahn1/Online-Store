@@ -47,7 +47,7 @@ const Payment = ({ email, amount }: Props) => {
             amount: amount * 100
         },
         });
-    }, [email, amount, mutate]);
+    }, [email, amount, mutate, user?.userId]);
 
     useEffect(() => {
         if (!paymentData.accessCode) return;
@@ -66,7 +66,7 @@ const Payment = ({ email, amount }: Props) => {
             queryKey: ["cart", user?.userId]
             });
         }
-    }, [data?.status]);
+    }, [data?.status, queryClient, user?.userId]);
 
     return (
         <div>
