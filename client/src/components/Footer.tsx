@@ -6,7 +6,7 @@ import { faChair, faComputerMouse, faGamepad, faHeadset, faHome, faKeyboard } fr
 import { HashLink } from 'react-router-hash-link';
 import { Dispatch, SetStateAction } from 'react';
 
-const Footer = ({ setCategory }: { setCategory: Dispatch<SetStateAction<string>> }) => {
+const Footer = ({ setCategory }: { setCategory: Dispatch<SetStateAction<number | null>> }) => {
     return (
         <footer>
             <div className="footer-links">
@@ -14,31 +14,31 @@ const Footer = ({ setCategory }: { setCategory: Dispatch<SetStateAction<string>>
                     <h2>Shop</h2>
 
                     <Link to="/products">
-                        <li onClick={() => setCategory("Playstation Accessories")}>Playstation Accessories &nbsp; <FontAwesomeIcon icon={faPlaystation} /></li>
+                        <li onClick={() => setCategory(1)}>Playstation Accessories &nbsp; <FontAwesomeIcon icon={faPlaystation} /></li>
                     </Link>
 
                     <Link to="/products">
-                        <li onClick={() => setCategory("PC Headsets")}>PC Headsets &nbsp; <FontAwesomeIcon icon={faHeadset} /></li>
+                        <li onClick={() => setCategory(2)}>PC Headsets &nbsp; <FontAwesomeIcon icon={faHeadset} /></li>
                     </Link>
 
                     <Link to="/products">
-                        <li onClick={() => setCategory("Xbox Accessories")}>Xbox Accessories &nbsp; <FontAwesomeIcon icon={faXbox} /></li>
+                        <li onClick={() => setCategory(3)}>Xbox Accessories &nbsp; <FontAwesomeIcon icon={faXbox} /></li>
                     </Link>
 
                     <Link to="/products">
-                        <li onClick={() => setCategory("Mouses & Mouse Pads")}>Mouses/Mouse Pads &nbsp; <FontAwesomeIcon icon={faComputerMouse} /></li>
+                        <li onClick={() => setCategory(4)}>Mouses/Mouse Pads &nbsp; <FontAwesomeIcon icon={faComputerMouse} /></li>
                     </Link>
 
                     <Link to="/products">
-                        <li onClick={() => setCategory("Consoles")}>Consoles &nbsp; <FontAwesomeIcon icon={faGamepad} /></li>
+                        <li onClick={() => setCategory(5)}>Keyboards &nbsp; <FontAwesomeIcon icon={faKeyboard} /></li>
+                    </Link>
+
+                     <Link to="/products">
+                        <li onClick={() => setCategory(6)}>Consoles &nbsp; <FontAwesomeIcon icon={faGamepad} /></li>
                     </Link>
 
                     <Link to="/products">
-                        <li onClick={() => setCategory("Keyboards")}>Keyboards &nbsp; <FontAwesomeIcon icon={faKeyboard} /></li>
-                    </Link>
-
-                    <Link to="/products">
-                        <li onClick={() => setCategory("Gaming Chairs")}>Gaming Chairs &nbsp; <FontAwesomeIcon icon={faChair} /></li>
+                        <li onClick={() => setCategory(7)}>Gaming Chairs &nbsp; <FontAwesomeIcon icon={faChair} /></li>
                     </Link>
                 </ul>
 
