@@ -18,7 +18,7 @@ const App = () => {
   const [loggedIn, setLoggedIn] = useState<boolean | null>(null);
   const [showCart, setShowCart] = useState(false);
   const [blur, setBlur] = useState(false);
-  const [clickedCategory, setClickedCategory] = useState<number | null>(getSessionStorage<number>("clickedCategory"));
+  const [clickedCategory, setClickedCategory] = useState<number | null>(getSessionStorage("clickedCategory"));
 
   const { data: user } = useAuth();
 
@@ -41,7 +41,9 @@ const App = () => {
     <div className="app">
       <BrowserRouter>
         {renderNav}
+        
         {showCart && <Cart setBlur={setBlur} setShowCart={setShowCart} />}
+
         <Routes>
           <Route path='/' index element={<Home blur={blur} setCategory={setClickedCategory} />} />
           <Route path='/register' element={<Register />} />
@@ -49,6 +51,7 @@ const App = () => {
           <Route path='/products' element={<ProductsPage loggedIn={loggedIn} category={clickedCategory} setCategory={setClickedCategory} blur={blur} />} />
           <Route path='/product' element={<Product blur={blur} loggedIn={loggedIn} />} />
         </Routes>
+
         <Footer setCategory={setClickedCategory} />
       </BrowserRouter>
     </div>
