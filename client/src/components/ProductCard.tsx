@@ -4,11 +4,6 @@ import AddProductToCart from "./AddProductToCart";
 
 type Data = {
   brand: string;
-  category: {
-    id: number;
-    name: string;
-    image: string;
-  };
   image: string;
   price: number;
   productId: number;
