@@ -18,7 +18,7 @@ const App = () => {
   const [loggedIn, setLoggedIn] = useState<boolean | null>(null);
   const [showCart, setShowCart] = useState(false);
   const [blur, setBlur] = useState(false);
-  const [clickedCategory, setClickedCategory] = useState(getSessionStorage("clickedCategory"));
+  const [clickedCategory, setClickedCategory] = useState<number | null>(getSessionStorage<number>("clickedCategory"));
 
   const { data: user } = useAuth();
 
