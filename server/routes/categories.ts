@@ -3,9 +3,8 @@ import pool from "../database";
 
 const categoriesRouter = Router();
 
-//all categories
 categoriesRouter.get("/", (req, res) => {
-  const sql = 'SELECT DISTINCT category->"$.id" AS "id", category->"$.name" AS "name", category->"$.image" AS "image" FROM products';
+  const sql = "SELECT * FROM categories ORDER BY name ASC";
 
   pool.getConnection((err: any, connection: any) => {
     if (err) {

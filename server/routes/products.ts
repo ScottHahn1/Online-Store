@@ -13,16 +13,16 @@ productsRouter.get("/", async (req, res) => {
   let sql: string;
 
   if (!category) {
-    if (sortBy === 'title') {
+    if (sortBy === "title") {
       sql = `SELECT * FROM products ORDER BY ${sortBy} ASC, productId LIMIT ? OFFSET ?`;
     } else {
       sql = `SELECT * FROM products ORDER BY ${sortBy} DESC, productId LIMIT ? OFFSET ?`;
     }
   } else {
-    if (sortBy === 'title') {
-      sql = `SELECT * FROM products WHERE category->"$.name" = ? ORDER BY ${sortBy} ASC, productId LIMIT ? OFFSET ?`;
+    if (sortBy === "title") {
+      sql = `SELECT * FROM products WHERE categoryId = ? ORDER BY ${sortBy} ASC, productId LIMIT ? OFFSET ?`;
     } else {
-      sql = `SELECT * FROM products WHERE category->"$.name" = ? ORDER BY ${sortBy} DESC, productId LIMIT ? OFFSET ?`;
+      sql = `SELECT * FROM products WHERE categoryId = ? ORDER BY ${sortBy} DESC, productId LIMIT ? OFFSET ?`;
     }
   }
 
@@ -41,7 +41,7 @@ productsRouter.get("/total", async (req, res) => {
   let sql: string;
 
   if (category) {
-    sql = `SELECT COUNT(*) AS count FROM products WHERE category->"$.name" = "${category}"`;
+    sql = `SELECT COUNT(*) AS count FROM products WHERE categoryId = ${category}`;
   } else {
     sql = "SELECT COUNT(*) AS count FROM products";
   }
@@ -55,8 +55,8 @@ productsRouter.get("/total", async (req, res) => {
 });
 
 productsRouter.get("/similar", (req, res) => {
-  const { productId, category } = req.query;
-  const sql = `SELECT DISTINCT productId, title, image, price FROM products WHERE category->"$.name" = "${category}" AND NOT productId = ${productId}`;
+  const { productId, categoryId } = req.query;
+  const sql = `SELECT DISTINCT productId, title, image, price FROM products WHERE categoryId = ${categoryId} AND NOT productId = ${productId}`;
 
   pool.getConnection((err: any, connection: any) => {
     if (err) {
