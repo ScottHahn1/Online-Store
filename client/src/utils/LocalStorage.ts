@@ -9,11 +9,10 @@ const setLocalStorage = <T>(key: string, value: T) => {
 const getLocalStorage = (key: string) => {
     try {
         const item = window.localStorage.getItem(key);
-        if (item !== 'undefined' && item !== null) {
-            return JSON.parse(item);
-        }
+        return item ? JSON.parse(item) : null;
     } catch (error) {
         console.log(error);
+        return null;
     }
 }
 
@@ -36,11 +35,10 @@ const setSessionStorage = <T>(key: string, value: T) => {
 const getSessionStorage = (key: string) => {
     try {
         const item = window.sessionStorage.getItem(key);
-        if (item) {
-            return JSON.parse(item);
-        }
+        return item ? JSON.parse(item) : null;
     } catch (error) {
         console.log(error);
+        return null;
     }
 }
 
