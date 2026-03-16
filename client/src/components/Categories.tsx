@@ -31,7 +31,7 @@ const Categories = ({ categoryId, setCategoryName, clickedCategory, setClickedCa
     if (data?.length && clickedCategory) {
       setCategoryName(data.filter((category) => clickedCategory === category.id)[0].name)
     }
-  }, [data, clickedCategory])
+  }, [data, clickedCategory, setClickedCategory])
 
   return (
     <>
