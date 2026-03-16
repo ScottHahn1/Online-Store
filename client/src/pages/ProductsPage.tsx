@@ -8,11 +8,7 @@ import { getData } from "../utils/Api";
 
 type Data = {
   brand: string;
-  category: {
-    id: number;
-    name: string;
-    image: string;
-  };
+  categoryId: number;
   image: string;
   price: number;
   productId: number;
@@ -24,13 +20,13 @@ type Data = {
 
 type Props = {
   blur: boolean;
-  category: string
+  category: number | null;
   loggedIn: boolean | null;
-  setCategory: Dispatch<SetStateAction<string>>
+  setCategory: Dispatch<SetStateAction<number | null>>;
 }
 
 type QueryParams = {
-  category: string;
+  category: number | null;
   page: number;
   sortBy: string;
 }
@@ -38,6 +34,7 @@ type QueryParams = {
 const ProductsPage = ({ category, setCategory, blur, loggedIn }: Props) => {
   const [currentPage, setCurrentPage] = useState(1);
   const [sortBy, setSortBy] = useState('price');
+  const [categoryName, setCategoryName] = useState("");
 
   useLayoutEffect(() => {
     window.scrollTo(0, 0);
@@ -45,40 +42,42 @@ const ProductsPage = ({ category, setCategory, blur, loggedIn }: Props) => {
 
   const handleSelect = (e: ChangeEvent<HTMLSelectElement>) => {
     setSortBy(e.currentTarget.value);
-    setCurrentPage(1); // changing the sortBy value will set the current page back to page 1
+    setCurrentPage(1);
   }
 
-  //get the total amount of products in a category
   const { data: totalProducts } = useQuery({
     queryKey: ['totalProducts', category],
-    queryFn: () => getData<{ count: number }, { category: string }>('/api/products/total', { category: category })
+    queryFn: () => getData<{ count: number }, { category: number | null }>('/api/products/total', { category })
   })
 
-  //get all products in a category
   const { data: products, isLoading } = useQuery({
     queryKey: ['allProducts', category, currentPage, sortBy],
-    queryFn: () => getData<Data[], QueryParams>('/api/products', { category: category, page: currentPage, sortBy: sortBy }),
+    queryFn: () => getData<Data[], QueryParams>('/api/products', { category, page: currentPage, sortBy }),
   });
 
   useEffect(() => {
-    setCurrentPage(1); // changing the category will set the current page back to page 1
+    setCurrentPage(1); 
   }, [category])
 
   return (
     <div className='flex-space-between' style={{ filter: blur ? "blur(3px)" : "" }}>
-      <Categories clickedCategory={category} setClickedCategory={setCategory} />
+      <Categories categoryId={category} setCategoryName={setCategoryName} clickedCategory={category} setClickedCategory={setCategory} /> 
+      
       {
         !isLoading &&
         <div className='products-container'>
           <div className='products-header'>
-            { category ? <h2>{category}</h2> : <h2>All Products</h2> }
+            { category ? <h2>{categoryName}</h2> : <h2>All Products</h2> }
+
             { totalProducts && <div>{totalProducts.count} items</div> }
+
             <select onChange={handleSelect} style={{ fontSize: "1.2rem" }}>
               <option value='price'>Price</option>
               <option value='title'>A-Z</option>
               <option value='rating'>Rating</option>
             </select>
           </div>
+
           <div className='cards'>
             { products?.map(product => <ProductCard loggedIn={loggedIn} product={product} key={product.productId} />) }
           </div>

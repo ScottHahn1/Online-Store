@@ -18,16 +18,16 @@ type Data = {
 type Props = {
   product?: {};
   productId: number;
-  category: string;
+  categoryId: number;
 };
 
-const Similar = ({ product, productId, category }: Props) => {
+const Similar = ({ product, productId, categoryId }: Props) => {
   const { data } = useQuery({
     queryKey: ["similar", product],
     queryFn: () =>
       getData<Data, Props>('/api/products/similar', {
         productId: productId,
-        category: category,
+        categoryId
       }),
     enabled: !!getSessionStorage('product'),
   });

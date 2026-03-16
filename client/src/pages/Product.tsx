@@ -15,9 +15,7 @@ type Data = {
   price: number;
   rating: number;
   ratingCount: number;
-  category: {
-    name: string;
-  };
+  categoryId: number;
 };
 
 type Props = {
@@ -80,7 +78,7 @@ const Product = ({ blur, loggedIn }: Props) => {
         <Similar
           product={data}
           productId={data.productId}
-          category={data.category.name}
+          categoryId={data.categoryId}
         />
       )}
     </div>

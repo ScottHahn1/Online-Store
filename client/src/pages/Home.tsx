@@ -5,7 +5,7 @@ import { Link } from "react-router-dom";
 
 type Props = {
   blur: boolean,
-  setCategory: Dispatch<SetStateAction<string>>
+  setCategory: Dispatch<SetStateAction<number | null>>
 }
 
 const Home = ({ blur, setCategory }: Props) => {
