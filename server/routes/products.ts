@@ -53,13 +53,18 @@ productsRouter.get("/total", async (req, res) => {
   let sql: string;
 
   if (category) {
-    sql = `SELECT COUNT(*) AS count FROM products WHERE categoryId = ${category}`;
+    sql = `SELECT COUNT(*) AS count
+FROM products p
+            JOIN product_categories pc ON p.productId = pc.product_id
+            WHERE pc.category_id = ?
+`;
   } else {
     sql = "SELECT COUNT(*) AS count FROM products";
   }
 
   try {
-    const [rows] = await pool.promise().query<RowDataPacket[]>(sql, []);
+const sqlQueryParams = category ? [category] : [];
+    const [rows] = await pool.promise().query<RowDataPacket[]>(sql, sqlQueryParams);
     res.status(200).json(rows[0]);
   } catch {
     res.status(500).json({ message: "Internal server error" });
