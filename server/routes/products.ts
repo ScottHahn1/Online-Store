@@ -20,9 +20,21 @@ productsRouter.get("/", async (req, res) => {
     }
   } else {
     if (sortBy === "title") {
-      sql = `SELECT * FROM products WHERE categoryId = ? ORDER BY ${sortBy} ASC, productId LIMIT ? OFFSET ?`;
+      sql = `SELECT p.*
+FROM products p
+              JOIN product_categories pc ON p.productId = pc.product_id
+WHERE pc.category_id = ?
+ORDER BY ${sortBy} ASC
+LIMIT ? OFFSET ?
+`;
     } else {
-      sql = `SELECT * FROM products WHERE categoryId = ? ORDER BY ${sortBy} DESC, productId LIMIT ? OFFSET ?`;
+      sql = `SELECT p.*
+FROM products p
+              JOIN product_categories pc ON p.productId = pc.product_id
+WHERE pc.category_id = ?
+ORDER BY ${sortBy} DESC, p.productId ASC
+LIMIT ? OFFSET ?
+`;
     }
   }
 
