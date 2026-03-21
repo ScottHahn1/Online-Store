@@ -31,7 +31,7 @@ type QueryParams = {
   sortBy: string;
 }
 
-const ProductsPage = ({ category, setCategory, blur, loggedIn }: Props) => {
+const Products = ({ category, setCategory, blur, loggedIn }: Props) => {
   const [currentPage, setCurrentPage] = useState(1);
   const [sortBy, setSortBy] = useState('price');
   const [categoryName, setCategoryName] = useState("");
@@ -115,4 +115,4 @@ const ProductsPage = ({ category, setCategory, blur, loggedIn }: Props) => {
   );
 };
 
-export default ProductsPage;
+export default Products;

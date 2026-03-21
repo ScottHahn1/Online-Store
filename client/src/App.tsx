@@ -4,7 +4,7 @@ import { BrowserRouter, Routes, Route } from "react-router-dom";
 import Home from "./pages/Home";
 import Navbar from "./components/Navbar";
 import Product from "./pages/Product";
-import ProductsPage from "./pages/ProductsPage";
+import Products from "./pages/Products";
 import Register from "./pages/Register";
 import Login from "./pages/Login";
 import Cart from "./components/Cart";
@@ -48,7 +48,7 @@ const App = () => {
           <Route path='/' index element={<Home blur={blur} setCategory={setClickedCategory} />} />
           <Route path='/register' element={<Register />} />
           <Route path='/login' element={<Login loggedIn={loggedIn} setLoggedIn={setLoggedIn} />} />
-          <Route path='/products' element={<ProductsPage loggedIn={loggedIn} category={clickedCategory} setCategory={setClickedCategory} blur={blur} />} />
+          <Route path='/products' element={<Products loggedIn={loggedIn} category={clickedCategory} setCategory={setClickedCategory} blur={blur} />} />
           <Route path='/product' element={<Product blur={blur} loggedIn={loggedIn} />} />
         </Routes>
 
