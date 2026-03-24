@@ -1,9 +1,10 @@
-import { Link } from "react-router-dom";
+import { Link, useSearchParams } from "react-router-dom";
 import { setSessionStorage } from "../utils/LocalStorage";
 import AddProductToCart from "./AddProductToCart";
 
 type Data = {
   brand: string;
+  categoryId: number;
   image: string;
   price: number;
   productId: number;
@@ -19,6 +20,10 @@ type Props = {
 };
 
 const ProductCard = ({ loggedIn, product }: Props) => {
+  const slugifyProduct = (productTitle: string) => {
+    return productTitle.toLowerCase().replaceAll("&", "and").replaceAll(" ", "-");
+  }
+
   return (
     <div
       className='card'
@@ -26,13 +31,18 @@ const ProductCard = ({ loggedIn, product }: Props) => {
         setSessionStorage('product', product.productId);
       }}
     >
-      <Link to={'/product'}>
-        <img src={product.image} alt={product.title} />
+      <Link to={`/product/${product.productId}/${slugifyProduct(product.title)}`} className="product-link">
+        <div className="product-image-wrapper">
+          <img src={product.image} alt={product.title} className="product-image" />
+        </div>
       </Link>
-      <h4>{product.title}</h4>
+      
+      <h4 className="product-title">{product.title}</h4>
+
       <p>
         {product.rating} ({product.ratingCount} reviews)
       </p>
+
       <p>
         {new Intl.NumberFormat('en-ZA', {
           style: 'currency',
