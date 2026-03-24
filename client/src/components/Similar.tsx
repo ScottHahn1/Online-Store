@@ -1,80 +1,67 @@
 import { useQuery } from "@tanstack/react-query";
 import { getData } from "../utils/Api";
-import { getSessionStorage, setSessionStorage } from "../utils/LocalStorage";
 import { useEffect, useState } from "react";
-import arrayShuffle from "array-shuffle";
+import { Product } from "../pages/Product";
+import { Link, useParams } from "react-router-dom";
 
-type Data = {
-  productId: number;
-  title: string;
-  brand: string;
-  image: string;
-  overview: string;
-  price: number;
-  rating: number;
-  ratingCount: number;
-}[];
-
-type Props = {
-  product?: {};
-  productId: number;
+interface Props {
+  product: Product;
   categoryId: number;
 };
 
-const Similar = ({ product, productId, categoryId }: Props) => {
-  const { data } = useQuery({
-    queryKey: ["similar", product],
+const Similar = ({ product, categoryId }: Props) => {
+  const { id } = useParams();
+
+  const { data: similarProducts } = useQuery({
+    queryKey: ["similar", id],
     queryFn: () =>
-      getData<Data, Props>('/api/products/similar', {
-        productId: productId,
+      getData<Product[], {}>('/api/products/similar', {
         categoryId
       }),
-    enabled: !!getSessionStorage('product'),
   });
-
-  const [shuffledData, setShuffledData] = useState<Data>([]);
-
-  useEffect(() => {
-    if (data) {
-      setShuffledData(arrayShuffle(data));
-    }
-  }, [data]);
 
   useEffect(() => {
     window.scrollTo({
       top: 0,
       behavior: 'smooth',
     });
-  }, [shuffledData]);
+  }, [similarProducts]);
+
+  const slugifyProduct = (productTitle: string) => {
+    return productTitle.toLowerCase().replaceAll("&", "and").replaceAll(" ", "-");
+  }
 
   return (
     <div className='similar' style={{ textAlign: 'center' }}>
       <h2>Similar Products</h2>
+
       <div className='cards'>
-        {shuffledData &&
-          shuffledData
-            .map((product) => (
-              <div
-                className='card'
-                onClick={() => {
-                  setSessionStorage('product', product.productId);
-                }}
-                key={product.productId}
-              >
-                <img
-                  src={product.image}
-                  alt={product.title}
-                  onClick={() => window.location.reload()}
-                />
-                <h4>{product.title}</h4>
+        {similarProducts?.length &&
+          similarProducts.map((similarProduct) => (
+            <Link 
+              className="card"
+              key={similarProduct.productId} 
+              to={`/product/${similarProduct.productId}/${slugifyProduct(similarProduct.title)}`}
+            >
+              <div>
+                <div className="product-image-wrapper">
+                  <img
+                    className="product-image"
+                    src={similarProduct.image}
+                    alt={similarProduct.title}
+                  />
+                </div>
+
+                <h4 >{similarProduct.title}</h4>
+
                 {new Intl.NumberFormat('en-ZA', {
                   style: 'currency',
                   currency: 'ZAR',
                   minimumFractionDigits: 2,
-                }).format(product.price)}
+                }).format(similarProduct.price)}
               </div>
-            ))
-            .slice(0, 8)}
+            </Link>
+          ))}
       </div>
     </div>
   );
