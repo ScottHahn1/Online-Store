@@ -1,16 +1,19 @@
 import "../styles/Categories.css";
-import { Dispatch, SetStateAction, useEffect, useRef } from "react";
-import useCategories from "../hooks/useCategories";
+import { useRef } from "react";
+import { Category } from "../hooks/useCategories";
+import { useSearchParams } from "react-router-dom";
 
 interface Props {
-  categoryId: number | null;
-  setCategoryName: Dispatch<SetStateAction<string>>;
-  clickedCategory: number | null;
-  setClickedCategory: Dispatch<SetStateAction<number | null>>;
+  categories: Category[];
+  isLoading: boolean
 }
 
-const Categories = ({ categoryId, setCategoryName, clickedCategory, setClickedCategory }:  Props) => {
-  const { data, isLoading } = useCategories();
+const Categories = ({ categories, isLoading }: Props) => {
+  const [searchParams, setSearchParams] = useSearchParams();
+
+  const slugify = (categoryName: string) => {
+    return categoryName?.toLowerCase().replaceAll("&", "and").replaceAll(" ", "-")
+  }
 
   const headerRef = useRef<HTMLDivElement | null>(null);
 
@@ -27,29 +30,23 @@ const Categories = ({ categoryId, setCategoryName, clickedCategory, setClickedCa
     prevScrollpos = currentScrollPos;
   }
 
-  useEffect(() => {
-    if (data?.length && clickedCategory) {
-      setCategoryName(data.filter((category) => clickedCategory === category.id)[0].name)
-    }
-  }, [data, clickedCategory, setCategoryName])
-
   return (
     <>
-      {!isLoading && data && (
+      {!isLoading && categories && (
         <div className="categories" ref={headerRef}>
           <span 
             className="category"
-            onClick={() => setClickedCategory(null)}
-            style={{ borderBottom: !clickedCategory ? "2px solid red" : "none" }}
+            onClick={() => setSearchParams({})}
+            style={{ borderBottom: !searchParams.get("category") ? "2px solid red" : "none" }}
           >
             All Products
           </span>
-          {data.map(category => (
+          {categories.map(category => (
             <div 
               className="category" 
-              onClick={() => setClickedCategory(category.id)} 
+              onClick={() => setSearchParams({ category: slugify(category.name) })} 
               key={category.name}  
-              style={{ borderBottom: category.id === categoryId ? "2px solid red" : "none" }}
+              style={{ borderBottom: slugify(category.name) === searchParams.get("category") ? "2px solid red" : "none" }}
             >
               { category.name }
             </div>
