@@ -1,12 +1,12 @@
 import { useQuery } from "@tanstack/react-query";
 import { getData } from "../utils/Api";
 import "../styles/Product.css";
-import { getSessionStorage } from "../utils/LocalStorage";
 import Rating from "../components/Rating";
 import Similar from "../components/Similar";
 import AddProductToCart from "../components/AddProductToCart";
+import { useParams, useSearchParams } from "react-router-dom";
 
-type Data = {
+export interface Product {
   productId: number;
   title: string;
   brand: string;
@@ -15,7 +15,9 @@ type Data = {
   price: number;
   rating: number;
   ratingCount: number;
-  categoryId: number;
+  category: {
+    id: number;
+  }
 };
 
 type Props = {
@@ -24,13 +26,14 @@ type Props = {
 }
 
 const Product = ({ blur, loggedIn }: Props) => {
+  const { id } = useParams();
+
   const { data, isLoading } = useQuery({
-    queryKey: ['product'],
+    queryKey: ['product', id],
     queryFn: () =>
-      getData<Data, {}>(
-        `/api/products/${getSessionStorage('product')}`
-      ),
-    enabled: !!getSessionStorage('product'),
+      getData<Product, {}>(
+        `/api/products/${id}`
+      )
   });
 
   return (
@@ -77,8 +80,7 @@ const Product = ({ blur, loggedIn }: Props) => {
       {data && !isLoading && (
         <Similar
           product={data}
-          productId={data.productId}
-          categoryId={data.categoryId}
+          categoryId={data.category.id}
         />
       )}
     </div>

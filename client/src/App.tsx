@@ -49,7 +49,7 @@ const App = () => {
           <Route path='/register' element={<Register />} />
           <Route path='/login' element={<Login loggedIn={loggedIn} setLoggedIn={setLoggedIn} />} />
           <Route path='/products' element={<Products loggedIn={loggedIn} blur={blur} />} />
-          <Route path='/product' element={<Product blur={blur} loggedIn={loggedIn} />} />
+          <Route path='/product/:id/:name' element={<Product blur={blur} loggedIn={loggedIn} />} />
         </Routes>
 
         <Footer setCategory={setClickedCategory} />
