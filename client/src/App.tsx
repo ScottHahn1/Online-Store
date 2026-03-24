@@ -48,7 +48,7 @@ const App = () => {
           <Route path='/' index element={<Home blur={blur} setCategory={setClickedCategory} />} />
           <Route path='/register' element={<Register />} />
           <Route path='/login' element={<Login loggedIn={loggedIn} setLoggedIn={setLoggedIn} />} />
-          <Route path='/products' element={<Products loggedIn={loggedIn} category={clickedCategory} setCategory={setClickedCategory} blur={blur} />} />
+          <Route path='/products' element={<Products loggedIn={loggedIn} blur={blur} />} />
           <Route path='/product' element={<Product blur={blur} loggedIn={loggedIn} />} />
         </Routes>
 

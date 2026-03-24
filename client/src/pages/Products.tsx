@@ -5,6 +5,8 @@ import ProductCard from "../components/ProductCard";
 import "../styles/Products.css";
 import Categories from "../components/Categories";
 import { getData } from "../utils/Api";
+import { useSearchParams } from "react-router-dom";
+import useCategories from "../hooks/useCategories";
 
 type Data = {
   brand: string;
@@ -20,21 +22,32 @@ type Data = {
 
 type Props = {
   blur: boolean;
-  category: number | null;
   loggedIn: boolean | null;
-  setCategory: Dispatch<SetStateAction<number | null>>;
 }
 
 type QueryParams = {
-  category: number | null;
+  categoryId: number | undefined;
   page: number;
   sortBy: string;
 }
 
-const Products = ({ category, setCategory, blur, loggedIn }: Props) => {
+const Products = ({ blur, loggedIn }: Props) => {
   const [currentPage, setCurrentPage] = useState(1);
   const [sortBy, setSortBy] = useState('price');
-  const [categoryName, setCategoryName] = useState("");
+  const [searchParams, setSearchParams] = useSearchParams();
+  const categoryParam = searchParams.get("category");
+
+  const slugify = (categoryName: string) => {
+    return categoryName?.toLowerCase().replaceAll("&", "and").replaceAll(" ", "-");
+  }
+
+  const { data: categories, isLoading: isCategoriesLoading } = useCategories();
+
+  const selectedCategory = categories?.find(category => {
+    return slugify(category.name) == categoryParam;
+  })
+
+  const categoryId = selectedCategory?.id;
 
   useLayoutEffect(() => {
     window.scrollTo(0, 0);
@@ -46,28 +59,37 @@ const Products = ({ category, setCategory, blur, loggedIn }: Props) => {
   }
 
   const { data: totalProducts } = useQuery({
-    queryKey: ['totalProducts', category],
-    queryFn: () => getData<{ count: number }, { category: number | null }>('/api/products/total', { category })
+    queryKey: ['totalProducts', categoryId],
+    queryFn: () => getData<{ count: number }, { categoryId: number | undefined }>('/api/products/total', { categoryId })
   })
 
   const { data: products, isLoading } = useQuery({
-    queryKey: ['allProducts', category, currentPage, sortBy],
-    queryFn: () => getData<Data[], QueryParams>('/api/products', { category, page: currentPage, sortBy }),
+    queryKey: ['allProducts', categoryId, currentPage, sortBy],
+    queryFn: () => getData<Data[], QueryParams>('/api/products', { categoryId, page: currentPage, sortBy }),
   });
 
   useEffect(() => {
     setCurrentPage(1); 
-  }, [category])
+  }, [categoryParam])
 
   return (
     <div className='flex-space-between' style={{ filter: blur ? "blur(3px)" : "" }}>
-      <Categories categoryId={category} setCategoryName={setCategoryName} clickedCategory={category} setClickedCategory={setCategory} /> 
-      
+      {/* <Categories categoryId={category} setCategoryName={setCategoryName} clickedCategory={category} setClickedCategory={setCategory} />  */}
+      { categories && <Categories categories={categories} isLoading={isCategoriesLoading} />  }
+
       {
         !isLoading &&
         <div className='products-container'>
           <div className='products-header'>
-            { category ? <h2>{categoryName}</h2> : <h2>All Products</h2> }
+            { 
+              categoryParam ? 
+              <h2>{categories?.find(category => {
+                  return slugify(category.name) == categoryParam
+                })?.name}
+              </h2> 
+              : 
+              <h2>All Products</h2> 
+            }
 
             { totalProducts && <div>{totalProducts.count} items</div> }
 
