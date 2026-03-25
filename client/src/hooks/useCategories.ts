@@ -1,17 +1,17 @@
 import { useQuery } from "@tanstack/react-query";
 import { getData } from "../utils/Api";
 
-type Data = {
+export interface Category {
   id: number,
   name: string,
   image: string
-}[];
+};
 
 const useCategories = () => {
     const { data, isLoading } = useQuery({
       queryKey: ['categories'],
       queryFn: () =>
-        getData<Data, {}>('/api/categories', {})
+        getData<Category[], {}>('/api/categories', {})
     });
 
     return { data, isLoading };
