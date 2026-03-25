@@ -5,14 +5,14 @@ import { RowDataPacket } from "mysql2";
 const productsRouter = Router();
 
 productsRouter.get("/", async (req, res) => {
-  const { category, sortBy } = req.query;
+  const { categoryId, sortBy } = req.query;
   const page = parseInt(req.query.page as string);
   const limit = 50;
   const offset = (page - 1) * limit;
 
   let sql: string;
 
-  if (!category) {
+  if (!categoryId) {
     if (sortBy === "title") {
       sql = `SELECT * FROM products ORDER BY ${sortBy} ASC, productId LIMIT ? OFFSET ?`;
     } else {
@@ -39,7 +39,7 @@ LIMIT ? OFFSET ?
   }
 
   try {
-    const sqlQueryParams = category ? [category, limit, offset] : [limit, offset];
+    const sqlQueryParams = categoryId ? [categoryId, limit, offset] : [limit, offset];
     const [rows] = await pool.promise().query(sql, sqlQueryParams);
     res.status(200).json(rows);
   } catch {
@@ -48,11 +48,11 @@ LIMIT ? OFFSET ?
 });
 
 productsRouter.get("/total", async (req, res) => {
-  const { category } = req.query;
+  const { categoryId } = req.query;
 
   let sql: string;
 
-  if (category) {
+  if (categoryId) {
     sql = `SELECT COUNT(*) AS count
 FROM products p
             JOIN product_categories pc ON p.productId = pc.product_id
@@ -63,7 +63,7 @@ FROM products p
   }
 
   try {
-const sqlQueryParams = category ? [category] : [];
+const sqlQueryParams = categoryId ? [categoryId] : [];
     const [rows] = await pool.promise().query<RowDataPacket[]>(sql, sqlQueryParams);
     res.status(200).json(rows[0]);
   } catch {
