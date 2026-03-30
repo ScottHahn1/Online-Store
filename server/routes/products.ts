@@ -71,27 +71,24 @@ const sqlQueryParams = categoryId ? [categoryId] : [];
   }
 });
 
-productsRouter.get("/similar", (req, res) => {
-  const { productId, categoryId } = req.query;
-  const sql = `SELECT DISTINCT productId, title, image, price FROM products WHERE categoryId = ${categoryId} AND NOT productId = ${productId}`;
+productsRouter.get("/similar", async (req, res) => {
+  const { categoryId } = req.query;
+  const limit = 8;
 
-  pool.getConnection((err: any, connection: any) => {
-    if (err) {
-      console.log(err);
-      return;
-    }
+  const sql = `SELECT p.*
+              FROM products p
+              JOIN product_categories pc ON p.productId = pc.product_id
+              WHERE pc.category_id = ?
+              LIMIT ?
+              `
 
-    connection.query(sql, [], (err: any, rows: any) => {
-      if (err) {
-        console.log(err);
-        return;
-      }
-
-      res.send(rows);
-
-      connection.release();
-    });
-  });
+  try {
+    const sqlQueryParams = [categoryId, limit];
+    const [rows] = await pool.promise().query<RowDataPacket[]>(sql, sqlQueryParams);
+    res.status(200).json(rows);
+  } catch {
+    res.status(500).json({ message: "Internal server error"     });
+  }
 });
 
 productsRouter.get("/:id", (req, res) => {
