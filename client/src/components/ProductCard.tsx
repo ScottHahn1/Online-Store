@@ -1,4 +1,4 @@
-import { Link, useSearchParams } from "react-router-dom";
+import { Link } from "react-router-dom";
 import { setSessionStorage } from "../utils/LocalStorage";
 import AddProductToCart from "./AddProductToCart";
 
@@ -31,13 +31,23 @@ const ProductCard = ({ loggedIn, product }: Props) => {
         setSessionStorage('product', product.productId);
       }}
     >
-      <Link to={`/product/${product.productId}/${slugifyProduct(product.title)}`} className="product-link">
+      <Link to={`/product/${product.productId}/${slugifyProduct(product.title)}`}>
         <div className="product-image-wrapper">
           <img src={product.image} alt={product.title} className="product-image" />
         </div>
       </Link>
       
-      <h4 className="product-title">{product.title}</h4>
+      <div className="product-title-tooltip">
+        <h4 className="product-title">
+          {product.title}
+        </h4>
+
+        <div className="product-tooltip">
+            {product.title}
+        </div>
+      </div>
+
+      <h2>{product.productId}</h2>
 
       <p>
         {product.rating} ({product.ratingCount} reviews)
