@@ -1,5 +1,5 @@
 import { useQuery } from "@tanstack/react-query";
-import { ChangeEvent, Dispatch, SetStateAction, useEffect, useLayoutEffect, useState } from "react";
+import { ChangeEvent, useEffect, useLayoutEffect, useState } from "react";
 import "../styles/Products.css";
 import ProductCard from "../components/ProductCard";
 import "../styles/Products.css";
@@ -74,7 +74,6 @@ const Products = ({ blur, loggedIn }: Props) => {
 
   return (
     <div className='flex-space-between' style={{ filter: blur ? "blur(3px)" : "" }}>
-      {/* <Categories categoryId={category} setCategoryName={setCategoryName} clickedCategory={category} setClickedCategory={setCategory} />  */}
       { categories && <Categories categories={categories} isLoading={isCategoriesLoading} />  }
 
       {
@@ -94,15 +93,19 @@ const Products = ({ blur, loggedIn }: Props) => {
             { totalProducts && <div>{totalProducts.count} items</div> }
 
             <select onChange={handleSelect} style={{ fontSize: "1.2rem" }}>
-              <option value='price'>Price</option>
-              <option value='title'>A-Z</option>
-              <option value='rating'>Rating</option>
+              <option value="price">Price</option>
+              <option value="title">A-Z</option>
+              <option value="rating">Rating</option>
             </select>
           </div>
 
-          <div className='cards'>
-            { products?.map(product => <ProductCard loggedIn={loggedIn} product={product} key={product.productId} />) }
+          <div className="cards">
+            { products?.map(product => 
+                <ProductCard loggedIn={loggedIn} product={product} key={product.productId} />
+              ) 
+            }
           </div>
+
           <div className="pages">
             {
               currentPage > 1 &&
