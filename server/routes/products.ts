@@ -21,20 +21,20 @@ productsRouter.get("/", async (req, res) => {
   } else {
     if (sortBy === "title") {
       sql = `SELECT p.*
-FROM products p
+              FROM products p
               JOIN product_categories pc ON p.productId = pc.product_id
-WHERE pc.category_id = ?
-ORDER BY ${sortBy} ASC
-LIMIT ? OFFSET ?
-`;
+              WHERE pc.category_id = ?
+              ORDER BY ${sortBy} ASC
+              LIMIT ? OFFSET ?
+            `;
     } else {
       sql = `SELECT p.*
-FROM products p
+              FROM products p
               JOIN product_categories pc ON p.productId = pc.product_id
-WHERE pc.category_id = ?
-ORDER BY ${sortBy} DESC, p.productId ASC
-LIMIT ? OFFSET ?
-`;
+              WHERE pc.category_id = ?
+              ORDER BY ${sortBy} DESC, p.productId ASC
+              LIMIT ? OFFSET ?
+            `;
     }
   }
 
@@ -54,16 +54,16 @@ productsRouter.get("/total", async (req, res) => {
 
   if (categoryId) {
     sql = `SELECT COUNT(*) AS count
-FROM products p
+            FROM products p
             JOIN product_categories pc ON p.productId = pc.product_id
             WHERE pc.category_id = ?
-`;
+          `;
   } else {
     sql = "SELECT COUNT(*) AS count FROM products";
   }
 
   try {
-const sqlQueryParams = categoryId ? [categoryId] : [];
+    const sqlQueryParams = categoryId ? [categoryId] : [];
     const [rows] = await pool.promise().query<RowDataPacket[]>(sql, sqlQueryParams);
     res.status(200).json(rows[0]);
   } catch {
@@ -87,31 +87,29 @@ productsRouter.get("/similar", async (req, res) => {
     const [rows] = await pool.promise().query<RowDataPacket[]>(sql, sqlQueryParams);
     res.status(200).json(rows);
   } catch {
-    res.status(500).json({ message: "Internal server error"     });
+    res.status(500).json({ message: "Internal server error" });
   }
 });
 
-productsRouter.get("/:id", (req, res) => {
+productsRouter.get("/:id", async (req, res) => {
   const { id } = req.params;
-  const sql = `SELECT * FROM products WHERE productId = ${id}`;
 
-  pool.getConnection((err: any, connection: any) => {
-    if (err) {
-      console.log(err);
-      return;
-    }
+  try {
+    const [categoryRows] = await pool.promise().query<RowDataPacket[]>(
+      `SELECT c.id, c.name
+      FROM categories c
+      JOIN product_categories pc ON c.id = pc.category_id
+      WHERE pc.product_id = ?`, [id]
+    )
 
-    connection.query(sql, [], (err: any, rows: any) => {
-      if (err) {
-        console.log(err);
-        return;
-      }
+    const [productRows] = await pool.promise().query<RowDataPacket[]>(
+      `SELECT * FROM products WHERE productId = ?`, [id]
+    )
 
-      res.send(rows[0]);
-
-      connection.release();
-    });
-  });
+    res.status(200).json({...productRows[0], category: categoryRows[0]});
+  } catch {
+    res.status(500).json({ message: "Internal server error" });
+  }
 });
 
 export default productsRouter;
