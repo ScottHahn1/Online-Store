@@ -1,4 +1,3 @@
-import { Dispatch, SetStateAction } from 'react';
 import useCategories from '../hooks/useCategories';
 import { useNavigate } from 'react-router-dom';
 
