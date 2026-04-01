@@ -2,13 +2,9 @@ import { Dispatch, SetStateAction } from 'react';
 import useCategories from '../hooks/useCategories';
 import { useNavigate } from 'react-router-dom';
 
-interface Props {
-    setCategory: Dispatch<SetStateAction<number | null>>
-}
-
-const HomeCategories = ({ setCategory }: Props) => {
-    const { data, isLoading } = useCategories();
-    const navigate = useNavigate();
+const HomeCategories = () => {
+  const { data, isLoading } = useCategories();
+  const navigate = useNavigate();
 
     return (
       <div>

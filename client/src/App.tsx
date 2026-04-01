@@ -45,7 +45,7 @@ const App = () => {
         {showCart && <Cart setBlur={setBlur} setShowCart={setShowCart} />}
 
         <Routes>
-          <Route path='/' index element={<Home blur={blur} setCategory={setClickedCategory} />} />
+          <Route path='/' index element={<Home blur={blur} />} />
           <Route path='/register' element={<Register />} />
           <Route path='/login' element={<Login loggedIn={loggedIn} setLoggedIn={setLoggedIn} />} />
           <Route path='/products' element={<Products loggedIn={loggedIn} blur={blur} />} />

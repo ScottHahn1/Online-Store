@@ -1,14 +1,12 @@
 import "../styles/Home.css";
 import HomeCategories from "../components/HomeCategories";
-import { Dispatch, SetStateAction } from "react";
 import { Link } from "react-router-dom";
 
 type Props = {
-  blur: boolean,
-  setCategory: Dispatch<SetStateAction<number | null>>
+  blur: boolean;
 }
 
-const Home = ({ blur, setCategory }: Props) => {
+const Home = ({ blur }: Props) => {
   const image = require("../assets/images/hero-dark.jpg");
 
   return (
@@ -31,7 +29,7 @@ const Home = ({ blur, setCategory }: Props) => {
         </div>
       </div>
 
-      <HomeCategories setCategory={setCategory} />
+      <HomeCategories />
     </div>
   );
 };
