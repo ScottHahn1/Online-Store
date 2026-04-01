@@ -5,11 +5,10 @@ import { Product } from "../pages/Product";
 import { Link, useParams } from "react-router-dom";
 
 interface Props {
-  product: Product;
-  categoryId: number;
+    categoryId: number;
 };
 
-const Similar = ({ product, categoryId }: Props) => {
+const Similar = ({ categoryId }: Props) => {
   const { id } = useParams();
 
   const { data: similarProducts } = useQuery({

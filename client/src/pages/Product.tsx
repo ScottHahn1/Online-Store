@@ -79,8 +79,7 @@ const Product = ({ blur, loggedIn }: Props) => {
 
       {data && !isLoading && (
         <Similar
-          product={data}
-          categoryId={data.category.id}
+                    categoryId={data.category.id}
         />
       )}
     </div>
