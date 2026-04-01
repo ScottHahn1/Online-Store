@@ -33,8 +33,8 @@ type QueryParams = {
 
 const Products = ({ blur, loggedIn }: Props) => {
   const [currentPage, setCurrentPage] = useState(1);
-  const [sortBy, setSortBy] = useState('price');
-  const [searchParams, setSearchParams] = useSearchParams();
+  const [sortBy, setSortBy] = useState("price");
+  const [searchParams] = useSearchParams();
   const categoryParam = searchParams.get("category");
 
   const slugify = (categoryName: string) => {
@@ -44,7 +44,7 @@ const Products = ({ blur, loggedIn }: Props) => {
   const { data: categories, isLoading: isCategoriesLoading } = useCategories();
 
   const selectedCategory = categories?.find(category => {
-    return slugify(category.name) == categoryParam;
+    return slugify(category.name) === categoryParam;
   })
 
   const categoryId = selectedCategory?.id;
@@ -83,7 +83,7 @@ const Products = ({ blur, loggedIn }: Props) => {
             { 
               categoryParam ? 
               <h2>{categories?.find(category => {
-                  return slugify(category.name) == categoryParam
+                  return slugify(category.name) === categoryParam
                 })?.name}
               </h2> 
               : 
