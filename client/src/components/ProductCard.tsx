@@ -47,8 +47,6 @@ const ProductCard = ({ loggedIn, product }: Props) => {
         </div>
       </div>
 
-      <h2>{product.productId}</h2>
-
       <p>
         {product.rating} ({product.ratingCount} reviews)
       </p>
