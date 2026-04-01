@@ -1,7 +1,7 @@
 import { useQuery } from "@tanstack/react-query";
 import { getData } from "../utils/Api";
-import { useEffect, useState } from "react";
-import { Product } from "../pages/Product";
+import { useEffect } from "react";
+import { ProductData } from "../pages/Product";
 import { Link, useParams } from "react-router-dom";
 
 interface Props {
@@ -14,7 +14,7 @@ const Similar = ({ categoryId }: Props) => {
   const { data: similarProducts } = useQuery({
     queryKey: ["similar", id],
     queryFn: () =>
-      getData<Product[], {}>('/api/products/similar', {
+      getData<ProductData[], {}>('/api/products/similar', {
         categoryId
       }),
   });

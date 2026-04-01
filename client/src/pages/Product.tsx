@@ -4,9 +4,9 @@ import "../styles/Product.css";
 import Rating from "../components/Rating";
 import Similar from "../components/Similar";
 import AddProductToCart from "../components/AddProductToCart";
-import { useParams, useSearchParams } from "react-router-dom";
+import { useParams } from "react-router-dom";
 
-export interface Product {
+export interface ProductData {
   productId: number;
   title: string;
   brand: string;
@@ -31,7 +31,7 @@ const Product = ({ blur, loggedIn }: Props) => {
   const { data, isLoading } = useQuery({
     queryKey: ['product', id],
     queryFn: () =>
-      getData<Product, {}>(
+      getData<ProductData, {}>(
         `/api/products/${id}`
       )
   });
