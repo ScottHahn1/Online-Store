@@ -8,7 +8,6 @@ import useVerifyPayment from "../hooks/useVerifyPayment";
 interface PostVariables {
     url: string;
     body: {
-        userId: number;
         email: string;
         amount: number;
     };
@@ -42,7 +41,6 @@ const Payment = ({ email, amount }: Props) => {
         mutate({
         url: "/api/payments/initialize",
         body: {
-            userId: user?.userId as number,
             email,
             amount: amount * 100
         },
