@@ -3,12 +3,16 @@ import axios from "axios";
 import crypto from "crypto";
 import pool from "../database";
 import { RowDataPacket } from "mysql2";
+import authenticateToken from "../middlewares/authToken";
 
 const paymentsRouter = Router();
 
-paymentsRouter.post("/initialize", async (req, res) => {
+paymentsRouter.post("/initialize", authenticateToken, async (req, res) => {
+    const user = (req as any).user;
+    const userId = user.userId;
+
     try {
-        const { userId, email, amount } = req.body;
+        const { email, amount } = req.body;
 
         if (!email || !amount) {
             return res.status(400).json({ message: "Email and amount are required" });
@@ -31,7 +35,7 @@ paymentsRouter.post("/initialize", async (req, res) => {
         const accessCode = response.data.data.access_code;
         const reference = response.data.data.reference;
 
-        pool.query(
+        await pool.promise().query(
             `INSERT INTO payments (user_id, reference, access_code, amount, currency, status)
             VALUES (?, ?, ?, ?, ?, 'pending')`,
             [userId, reference, accessCode, amount, 'ZAR']
@@ -94,7 +98,7 @@ export const webhookHandler = async (req: Request, res: Response) => {
                         "UPDATE payments SET status = 'success' WHERE reference = ?",
                         [reference]
                     )
-
+                    
                     await pool.promise().query(
                         "DELETE FROM cart WHERE userId = ?",
                         [userId]
