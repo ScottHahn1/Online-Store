@@ -117,12 +117,6 @@ usersRouter.get('/me', authenticateToken, async (req: CustomRequest, res: Respon
 })
 
 usersRouter.post('/logout', (req, res) => {
-    res.clearCookie('accessToken', {
-        httpOnly: true,
-        secure: process.env.REACT_APP_NODE_ENV === 'production',
-        sameSite: process.env.REACT_APP_NODE_ENV === 'production' ? 'none' : 'lax'
-    });
-
     res.clearCookie('refreshToken', {
         httpOnly: true,
         secure: process.env.REACT_APP_NODE_ENV === 'production',
