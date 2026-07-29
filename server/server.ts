@@ -13,7 +13,7 @@ dotenv.config();
 const app = express();
 const port = process.env.PORT || 8888;
 const frontendUrl = process.env.NODE_ENV === "production" 
-? "https://online-store-frontend-mocha.vercel.app" 
+? "https://aggrogaming.vercel.app" 
 : "http://localhost:3000";
 
 app.post(
